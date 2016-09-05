@@ -121,6 +121,8 @@ namespace NaturalDate.Text
             get { return Math.Max(0, _tokens.Length - _index); }
         }
 
+        #region TokenEnumeratorCheckpoint
+
         internal class TokenEnumeratorCheckpoint : ITokenEnumeratorCheckpoint
         {
             readonly TokenEnumerator _tokenEnumerator;
@@ -149,5 +151,7 @@ namespace NaturalDate.Text
                 _tokenEnumerator._index = _index;
             }
         }
+
+        #endregion TokenEnumeratorCheckpoint
     }
 }

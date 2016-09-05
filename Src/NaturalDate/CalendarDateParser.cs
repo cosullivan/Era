@@ -6,6 +6,14 @@ namespace NaturalDate
 {
     internal sealed class CalendarDateParser : Parser
     {
+        static readonly Token[] DateSeparators = new Token[]
+        {
+            new Token(TokenKind.Space, ' '),
+            new Token(TokenKind.Punctuation, '/'),
+            new Token(TokenKind.Punctuation, '-'),
+            new Token(TokenKind.Punctuation, '.')
+        };
+
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -20,11 +28,28 @@ namespace NaturalDate
         public bool TryMakeDate(IDateBuilder builder)
         {
             int day;
-            if (TryMake(TryMakeDayPart, out day) == false)
+            if (TryMake(TryMakeDayPart, out day))
             {
-                return false;
+                return TryMakeDateWithDay(builder, day);
             }
 
+            int year;
+            if (TryMake(TryMakeYearPart, out year))
+            {
+                return TryMakeDateWithYear(builder, year);
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Attempt to make a day first date.
+        /// </summary>
+        /// <param name="builder">The date builder to populate from.</param>
+        /// <param name="day">The day that is to start the parsing.</param>
+        /// <returns>true if a day first date could be made, false if not.</returns>
+        bool TryMakeDateWithDay(IDateBuilder builder, int day)
+        {
             if (Enumerator.Peek().Kind == TokenKind.None)
             {
                 if (day < DateTime.DaysInMonth(builder.Year, builder.Month))
@@ -36,8 +61,8 @@ namespace NaturalDate
                 return false;
             }
 
-            Token original;
-            if (TryMakeDateSeparator(out original) == false)
+            Token separator;
+            if (TryMakeToken(DateSeparators, out separator) == false)
             {
                 return false;
             }
@@ -61,8 +86,7 @@ namespace NaturalDate
                 return false;
             }
 
-            Token separator;
-            if (TryMakeDateSeparator(out separator) == false || separator != original)
+            if (TryMakeToken(separator) == false)
             {
                 return false;
             }
@@ -86,23 +110,36 @@ namespace NaturalDate
         }
 
         /// <summary>
+        /// Attempt to make a year first date.
+        /// </summary>
+        /// <param name="builder">The date builder to populate from.</param>
+        /// <param name="year">The year that is to start the parsing.</param>
+        /// <returns>true if a year first date could be made, false if not.</returns>
+        bool TryMakeDateWithYear(IDateBuilder builder, int year)
+        {
+            //if (Enumerator.Peek().Kind == TokenKind.None)
+            //{
+            //    if (day < DateTime.DaysInMonth(builder.Year, builder.Month))
+            //    {
+            //        builder.Day = day;
+            //        return true;
+            //    }
+
+            //    return false;
+            //}
+
+            //return true;
+            return false;
+        }
+
+        /// <summary>
         /// Attempt to make the day part of the date.
         /// </summary>
         /// <param name="day">The day part of a date.</param>
         /// <returns>true if a day part could be made, false if not.</returns>
         internal bool TryMakeDayPart(out int day)
         {
-            day = 0;
-
-            var token = Enumerator.Take();
-            if (token.Kind != TokenKind.Number || token.LeadingZeros() > 1)
-            {
-                return false;
-            }
-
-            day = token.AsInteger();
-
-            return day > 0 && day <= 31; 
+            return TryMakeNumeric(1, 2, out day) && day > 0 && day <= 31; 
         }
 
         /// <summary>
@@ -127,17 +164,7 @@ namespace NaturalDate
         /// <returns>true if a month part could be made, false if not.</returns>
         internal bool TryMakeMonthPartNumeric(out int month)
         {
-            month = 0;
-
-            var token = Enumerator.Take();
-            if (token.Kind != TokenKind.Number || token.LeadingZeros() > 1)
-            {
-                return false;
-            }
-
-            month = token.AsInteger();
-
-            return month > 0 && month <= 12;
+            return TryMakeNumeric(1, 2, out month) && month > 0 && month <= 12;
         }
 
         /// <summary>
@@ -187,32 +214,12 @@ namespace NaturalDate
         /// <returns>true if a year part could be made, false if not.</returns>
         internal bool TryMakeYearPart(out int year)
         {
-            year = 0;
-
-            var token = Enumerator.Take();
-            if (token.Kind != TokenKind.Number || !(token.Text.Length == 2 || token.Text.Length == 4))
+            if (TryMakeNumeric(2, out year) || TryMakeNumeric(4, out year))
             {
-                return false;
+                return year >= 0 && year <= 9999;
             }
 
-            year = token.AsInteger();
-
-            return year >= 0 && year <= 9999;
-        }
-
-        /// <summary>
-        /// Attempt to make a date separator.
-        /// </summary>
-        /// <param name="token">The token that represents the separator.</param>
-        /// <returns>true if a month part could be made, false if not.</returns>
-        internal bool TryMakeDateSeparator(out Token token)
-        {
-            token = Enumerator.Take();
-
-            return token == new Token(TokenKind.Space, ' ')
-                || token == new Token(TokenKind.Punctuation, '/')
-                || token == new Token(TokenKind.Punctuation, '-') 
-                || token == new Token(TokenKind.Punctuation, '.');
+            return false;
         }
     }
 }

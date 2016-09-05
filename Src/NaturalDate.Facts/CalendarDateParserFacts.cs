@@ -39,6 +39,7 @@ namespace NaturalDate.Facts
                     new object[] { "10 Sep 1978", new DateTime(1978, 9, 10, 0, 0, 0) },
                     new object[] { "12", new DateTime(Reference.Year, Reference.Month, 12, 0, 0, 0) },
                     new object[] { "12/5", new DateTime(Reference.Year, 5, 12, 0, 0, 0) },
+                    new object[] { "1978-Sep-10", new DateTime(1978, 9, 10, 0, 0, 0) },
                 };
             }
         }
