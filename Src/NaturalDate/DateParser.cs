@@ -1,61 +1,162 @@
 ﻿using System;
+using System.Collections.Generic;
 using NaturalDate.Text;
 
 namespace NaturalDate
 {
-    public sealed class DateParser : Parser
+    internal abstract class DateParser : Parser, IDateParser
     {
+        static readonly Token[] DateSeparators =
+        {
+            new Token(TokenKind.Space, ' '),
+            new Token(TokenKind.Punctuation, '/'),
+            new Token(TokenKind.Punctuation, '-'),
+            new Token(TokenKind.Punctuation, '.')
+        };
+
+        Token _separator = Token.None;
+
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="reader">The token reader to read the input from.</param>
-        public DateParser(TokenReader reader) : base(new TokenEnumerator(reader)) { }
+        /// <param name="enumerator">The token enumerator to handle the incoming tokens.</param>
+        protected DateParser(TokenEnumerator enumerator) : base(enumerator) { }
 
         /// <summary>
         /// Attempt to make a date.
         /// </summary>
-        /// <param name="date">The date that was made from the input tokens.</param>
+        /// <param name="builder">The date builder that was used to build the date.</param>
         /// <returns>true if a date could be made, false if not.</returns>
-        public bool TryMakeDate(out DateTime date)
+        public abstract bool TryMakeDate(IDateBuilder builder);
+
+        /// <summary>
+        /// Attempt to make a date separator token.
+        /// </summary>
+        /// <returns>true if the date separator token could be made, false if not.</returns>
+        protected bool TryMakeSeparator()
         {
-            if (TryMake(TryMakeCalendarDate, out date) || TryMake(TryMakeFriendlyDate, out date))
+            if (_separator == Token.None)
+            {
+                return TryMakeToken(DateSeparators, out _separator);
+            }
+
+            return TryMakeToken(_separator);
+        }
+
+        /// <summary>
+        /// Attempt to make the day part of the date.
+        /// </summary>
+        /// <param name="day">The day part of a date.</param>
+        /// <returns>true if a day part could be made, false if not.</returns>
+        protected bool TryMakeDayPart(out int day)
+        {
+            return TryMakeNumeric(1, 2, out day) && day > 0 && day <= 31;
+        }
+
+        /// <summary>
+        /// Attempt to make the month part of the date.
+        /// </summary>
+        /// <param name="month">The month part of a date.</param>
+        /// <returns>true if a month part could be made, false if not.</returns>
+        protected bool TryMakeMonthPart(out int month)
+        {
+            if (TryMakeMonthPartNumeric(out month))
             {
                 return true;
             }
 
+            return TryMakeMonthPartText(out month);
+        }
+
+        /// <summary>
+        /// Attempt to make the month part of the date.
+        /// </summary>
+        /// <param name="month">The month part of a date.</param>
+        /// <returns>true if a month part could be made, false if not.</returns>
+        protected bool TryMakeMonthPartNumeric(out int month)
+        {
+            return TryMakeNumeric(1, 2, out month) && month > 0 && month <= 12;
+        }
+
+        /// <summary>
+        /// Attempt to make the month part of the date.
+        /// </summary>
+        /// <param name="month">The month part of a date.</param>
+        /// <returns>true if a month part could be made, false if not.</returns>
+        protected bool TryMakeMonthPartText(out int month)
+        {
+            month = 0;
+
+            var token = Enumerator.Peek();
+            if (token.Kind != TokenKind.Text)
+            {
+                return false;
+            }
+
+            var dictionary = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
+            {
+                { "Jan", 1 },
+                { "Feb", 2 },
+                { "Mar", 3 },
+                { "Apr", 4 },
+                { "May", 5 },
+                { "Jun", 6 },
+                { "Jul", 7 },
+                { "Aug", 8 },
+                { "Sep", 9 },
+                { "Oct", 10 },
+                { "Nov", 11 },
+                { "Dec", 12 },
+                { "January", 1 },
+                { "February", 2 },
+                { "March", 3 },
+                { "April", 4 },
+                { "June", 6 },
+                { "July", 7 },
+                { "August", 8 },
+                { "September", 9 },
+                { "October", 10 },
+                { "November", 11 },
+                { "December", 12 }
+            };
+
+            if (dictionary.TryGetValue(token.Text, out month))
+            {
+                Enumerator.Take();
+                return month > 0 && month <= 12;
+            }
+
             return false;
         }
-
+        
         /// <summary>
-        /// Attempt to make a date from a standard calendar date syntax.
+        /// Attempt to make the year part of the date.
         /// </summary>
-        /// <param name="date">The date that was made from the input tokens.</param>
-        /// <returns>true if a date could be made, false if not.</returns>
-        internal bool TryMakeCalendarDate(out DateTime date)
+        /// <param name="year">The year part of a date.</param>
+        /// <returns>true if a year part could be made, false if not.</returns>
+        protected bool TryMakeYearPart(out int year)
         {
-            //return new CalendarDateParser(Enumerator).TryMakeDate(out date);
-            date = DateTime.MaxValue;
-            return false;
+            return TryMake2DigitYearPart(out year) || TryMake4DigitYearPart(out year);
         }
 
         /// <summary>
-        /// Attempt to make a date from the friendly text syntax.
+        /// Attempt to make the year part of the date.
         /// </summary>
-        /// <param name="date">The date that was made from the input tokens.</param>
-        /// <returns>true if a date could be made, false if not.</returns>
-        internal bool TryMakeFriendlyDate(out DateTime date)
+        /// <param name="year">The year part of a date.</param>
+        /// <returns>true if a year part could be made, false if not.</returns>
+        protected bool TryMake2DigitYearPart(out int year)
         {
-            return new FriendlyDateParser(Enumerator).TryMakeDate(out date);
+            return TryMakeNumeric(2, out year) && year >= 0 && year <= 9999;
         }
 
         /// <summary>
-        /// Attempt to make a time from the friendly text syntax.
+        /// Attempt to make the year part of the date.
         /// </summary>
-        /// <param name="time">The time that was made from the input tokens.</param>
-        /// <returns>true if a time could be made, false if not.</returns>
-        internal bool TryMakeTime(out DateTime time)
+        /// <param name="year">The year part of a date.</param>
+        /// <returns>true if a year part could be made, false if not.</returns>
+        protected bool TryMake4DigitYearPart(out int year)
         {
-            return new TimeParser(Enumerator).TryMakeTime(out time);
+            return TryMakeNumeric(4, out year) && year >= 0 && year <= 9999;
         }
     }
 }

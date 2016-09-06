@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using NaturalDate.Text;
 using Xunit;
 
 namespace NaturalDate.Facts
 {
-    public sealed class CalendarDateParserFacts
+    public sealed class YearFirstDateParserFacts
     {
         static readonly DateTime Reference = new DateTime(1978, 9, 10, 14, 30, 10);
 
@@ -15,7 +14,7 @@ namespace NaturalDate.Facts
         public void Parse_CalendarDates_Success(string text, DateTime expected)
         {
             // arrange
-            var parser = new CalendarDateParser(new TokenEnumerator(new StringTokenReader(text)));
+            var parser = new YearFirstDateParser(new TokenEnumerator(new StringTokenReader(text)));
 
             // act
             var builder = new DateBuilder(Reference);
@@ -28,7 +27,15 @@ namespace NaturalDate.Facts
 
         public static IEnumerable<object[]> TheoryValues
         {
-            get { return DayFirstDateParserFacts.TheoryValues.Union(YearFirstDateParserFacts.TheoryValues).Union(MonthFirstDateParserFacts.TheoryValues).ToList(); }
+            get
+            {
+                return new List<object[]>
+                {
+                    new object[] { "1978", new DateTime(1978, 1, 1, 0, 0, 0) },
+                    new object[] { "1978-Sep", new DateTime(1978, 9, 1, 0, 0, 0) },
+                    new object[] { "1978-Sep-10", new DateTime(1978, 9, 10, 0, 0, 0) },
+                };
+            }
         }
     }
 }
