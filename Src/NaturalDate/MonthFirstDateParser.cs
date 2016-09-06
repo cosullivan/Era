@@ -15,7 +15,7 @@ namespace NaturalDate
         /// </summary>
         /// <param name="builder">The date builder that was used to build the date.</param>
         /// <returns>true if a date could be made, false if not.</returns>
-        public override bool TryMakeDate(IDateBuilder builder)
+        public override bool TryMakeDate(IDateTimeBuilder builder)
         {
             int month;
             if (TryMakeMonthPartText(out month) == false)
@@ -28,7 +28,7 @@ namespace NaturalDate
                 builder.Day = 1;
                 builder.Month = month;
 
-                return true;
+                return base.TryMakeDate(builder);
             }
 
             if (TryMakeSeparator() == false)
@@ -43,7 +43,7 @@ namespace NaturalDate
                 builder.Month = month;
                 builder.Year = year;
 
-                return true;
+                return base.TryMakeDate(builder);
             }
 
             return false;

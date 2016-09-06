@@ -17,7 +17,7 @@ namespace NaturalDate.Facts
             var parser = new MonthFirstDateParser(new TokenEnumerator(new StringTokenReader(text)));
 
             // act
-            var builder = new DateBuilder(Reference);
+            var builder = new DateTimeBuilder(Reference);
             var result = parser.TryMakeDate(builder);
 
             // assert

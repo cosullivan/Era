@@ -46,15 +46,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DateBuilder.cs" />
-    <Compile Include="DateParser.cs" />
+    <Compile Include="DateTimeBuilder.cs" />
+    <Compile Include="CalendarDateParser.cs" />
+    <Compile Include="IDateBuilder.cs" />
     <Compile Include="IDateParser.cs" />
+    <Compile Include="ITimeBuilder.cs" />
     <Compile Include="MonthFirstDateParser.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="YearFirstDateParser.cs" />
     <Compile Include="DayFirstDateParser.cs" />
-    <Compile Include="FriendlyDateParser.cs" />
-    <Compile Include="IDateBuilder.cs" />
+    <Compile Include="NaturalDateParser.cs" />
+    <Compile Include="IDateTimeBuilder.cs" />
     <Compile Include="TokenParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Text\StringTokenReader.cs" />

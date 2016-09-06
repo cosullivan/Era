@@ -23,7 +23,7 @@ namespace NaturalDate
         /// <param name="input">The input string to attempt to parse.</param>
         /// <param name="builder">The date builder to build the date into.</param>
         /// <returns>true if the input could be parsed, false if not.</returns>
-        public static bool TryParse<T>(string input, IDateBuilder<T> builder)
+        public static bool TryParse<T>(string input, IDateTimeBuilder<T> builder)
         {
             var parser = new Parser(new TokenEnumerator(new StringTokenReader(input)));
 
@@ -38,7 +38,7 @@ namespace NaturalDate
         /// <returns>true if the input could be parsed, false if not.</returns>
         public static bool TryParse(string input, out DateTime value)
         {
-            var builder = new DateBuilder(DateTime.Now);
+            var builder = new DateTimeBuilder(DateTime.Now);
 
             if (TryParse(input, builder))
             {
@@ -55,7 +55,7 @@ namespace NaturalDate
         /// </summary>
         /// <param name="builder">The date builder that was used to build the date.</param>
         /// <returns>true if a date could be made, false if not.</returns>
-        bool TryMakeDate(IDateBuilder builder)
+        bool TryMakeDate(IDateTimeBuilder builder)
         {
             if (new DayFirstDateParser(_enumerator).TryMakeDate(builder))
             {
@@ -68,6 +68,11 @@ namespace NaturalDate
             }
 
             if (new YearFirstDateParser(_enumerator).TryMakeDate(builder))
+            {
+                return true;
+            }
+
+            if (new NaturalDateParser(_enumerator).TryMakeDate(builder))
             {
                 return true;
             }

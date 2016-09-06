@@ -1,14 +1,5 @@
-﻿namespace NaturalDate
+namespace NaturalDate
 {
-    public interface IDateBuilder<out T> : IDateBuilder
-    {
-        /// <summary>
-        /// Returns the date that has been built.
-        /// </summary>
-        /// <returns>The date that has been built.</returns>
-        T Build();
-    }
-
     public interface IDateBuilder
     {
         /// <summary>

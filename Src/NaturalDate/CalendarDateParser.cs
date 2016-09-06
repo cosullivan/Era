@@ -27,7 +27,14 @@ namespace NaturalDate
         /// </summary>
         /// <param name="builder">The date builder that was used to build the date.</param>
         /// <returns>true if a date could be made, false if not.</returns>
-        public abstract bool TryMakeDate(IDateBuilder builder);
+        public virtual bool TryMakeDate(IDateTimeBuilder builder)
+        {
+            builder.Hour = 0;
+            builder.Minute = 0;
+            builder.Second = 0;
+
+            return true;
+        }
 
         /// <summary>
         /// Attempt to make a date separator token.

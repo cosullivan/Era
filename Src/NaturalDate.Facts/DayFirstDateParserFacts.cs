@@ -17,7 +17,7 @@ namespace NaturalDate.Facts
             var parser = new DayFirstDateParser(new TokenEnumerator(new StringTokenReader(text)));
 
             // act
-            var builder = new DateBuilder(Reference);
+            var builder = new DateTimeBuilder(Reference);
             var result = parser.TryMakeDate(builder);
 
             // assert
@@ -37,6 +37,7 @@ namespace NaturalDate.Facts
                     new object[] { "11-Oct-78", new DateTime(2078, 10, 11, 0, 0, 0) },
                     new object[] { "11.Oct.78", new DateTime(2078, 10, 11, 0, 0, 0) },
                     new object[] { "10 Sep 1978", new DateTime(1978, 9, 10, 0, 0, 0) },
+                    new object[] { "10/sep/1978", new DateTime(1978, 9, 10, 0, 0, 0) },
                     new object[] { "12", new DateTime(Reference.Year, Reference.Month, 12, 0, 0, 0) },
                     new object[] { "12/5", new DateTime(Reference.Year, 5, 12, 0, 0, 0) },
                 };
