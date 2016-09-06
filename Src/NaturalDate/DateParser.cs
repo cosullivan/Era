@@ -4,7 +4,7 @@ using NaturalDate.Text;
 
 namespace NaturalDate
 {
-    internal abstract class DateParser : Parser, IDateParser
+    internal abstract class CalendarDateParser : TokenParser, IDateParser
     {
         static readonly Token[] DateSeparators =
         {
@@ -20,7 +20,7 @@ namespace NaturalDate
         /// Constructor.
         /// </summary>
         /// <param name="enumerator">The token enumerator to handle the incoming tokens.</param>
-        protected DateParser(TokenEnumerator enumerator) : base(enumerator) { }
+        protected CalendarDateParser(TokenEnumerator enumerator) : base(enumerator) { }
 
         /// <summary>
         /// Attempt to make a date.

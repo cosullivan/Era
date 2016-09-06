@@ -3,7 +3,7 @@ using NaturalDate.Text;
 
 namespace NaturalDate
 {
-    internal sealed class TimeParser : Parser
+    internal sealed class TimeParser : TokenParser
     {
         /// <summary>
         /// Constructor.

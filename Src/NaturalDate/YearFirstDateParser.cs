@@ -3,7 +3,7 @@ using NaturalDate.Text;
 
 namespace NaturalDate
 {
-    internal sealed class YearFirstDateParser : DateParser
+    internal sealed class YearFirstDateParser : CalendarDateParser
     {
         /// <summary>
         /// Constructor.

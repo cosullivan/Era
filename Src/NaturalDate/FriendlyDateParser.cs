@@ -4,7 +4,7 @@ using NaturalDate.Text;
 
 namespace NaturalDate
 {
-    internal sealed class FriendlyDateParser : Parser
+    internal sealed class FriendlyDateParser : TokenParser
     {
         static readonly Dictionary<string, Func<DateTime>> Callbacks = new Dictionary<string, Func<DateTime>>(StringComparer.OrdinalIgnoreCase)
         {

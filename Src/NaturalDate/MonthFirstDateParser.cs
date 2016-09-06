@@ -2,7 +2,7 @@
 
 namespace NaturalDate
 {
-    internal sealed class MonthFirstDateParser : DateParser
+    internal sealed class MonthFirstDateParser : CalendarDateParser
     {
         /// <summary>
         /// Constructor.
