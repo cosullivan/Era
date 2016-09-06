@@ -70,12 +70,12 @@ namespace NaturalDate
                 return false;
             }
 
-            builder.Year = year < 100 ? 2000 + year : year;
-            builder.Month = month;
-
             if (day < DateTime.DaysInMonth(builder.Year, builder.Month))
             {
+                builder.Year = year < 100 ? 2000 + year : year;
+                builder.Month = month;
                 builder.Day = day;
+
                 return true;
             }
 

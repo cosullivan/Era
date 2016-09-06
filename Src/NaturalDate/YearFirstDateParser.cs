@@ -24,12 +24,12 @@ namespace NaturalDate
                 return false;
             }
 
-            builder.Year = year;
-
             if (Enumerator.Peek().Kind == TokenKind.None)
             {
+                builder.Year = year;
                 builder.Month = 1;
                 builder.Day = 1;
+
                 return true;
             }
 
@@ -44,11 +44,12 @@ namespace NaturalDate
                 return false;
             }
 
-            builder.Month = month;
-
             if (Enumerator.Peek().Kind == TokenKind.None)
             {
+                builder.Year = year;
+                builder.Month = month;
                 builder.Day = 1;
+
                 return true;
             }
 
@@ -60,7 +61,10 @@ namespace NaturalDate
             int day;
             if (TryMakeDayPart(out day) && day < DateTime.DaysInMonth(builder.Year, builder.Month))
             {
+                builder.Year = year;
+                builder.Month = month;
                 builder.Day = day;
+
                 return true;
             }
 

@@ -17,8 +17,6 @@ namespace NaturalDate
         /// <returns>true if a date could be made, false if not.</returns>
         public override bool TryMakeDate(IDateBuilder builder)
         {
-            builder.Day = 1;
-
             int month;
             if (TryMakeMonthPartText(out month) == false)
             {
@@ -27,7 +25,9 @@ namespace NaturalDate
 
             if (Enumerator.Peek().Kind == TokenKind.None)
             {
+                builder.Day = 1;
                 builder.Month = month;
+
                 return true;
             }
 
@@ -39,7 +39,10 @@ namespace NaturalDate
             int year;
             if (TryMakeYearPart(out year))
             {
+                builder.Day = 1;
+                builder.Month = month;
                 builder.Year = year;
+
                 return true;
             }
 

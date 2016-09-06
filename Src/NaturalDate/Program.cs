@@ -22,14 +22,6 @@ namespace NaturalDate
             //DateTime date;
             //Console.WriteLine(parser.TryMakeDate(out date));
             //Console.WriteLine(date);
-
-            var time = "12";
-
-            var parser = new TimeParser(new TokenEnumerator(new StringTokenReader(time)));
-
-            DateTime date;
-            Console.WriteLine(parser.TryMakeTime(out date));
-            Console.WriteLine(date);
         }
     }
 }

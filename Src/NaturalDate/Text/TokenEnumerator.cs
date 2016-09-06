@@ -103,14 +103,14 @@ namespace NaturalDate.Text
             return String.Concat(_tokens.Select(t => t.Text));
         }
 
-        /// <summary>
-        /// Create a checkpoint on the enumerator that can be rolled back to.
-        /// </summary>
-        /// <returns>The checkpoint handle.</returns>
-        internal ITokenEnumeratorCheckpoint Checkpoint()
-        {
-            return new TokenEnumeratorCheckpoint(this);
-        }
+        ///// <summary>
+        ///// Create a checkpoint on the enumerator that can be rolled back to.
+        ///// </summary>
+        ///// <returns>The checkpoint handle.</returns>
+        //internal ITokenEnumeratorCheckpoint Checkpoint()
+        //{
+        //    return new TokenEnumeratorCheckpoint(this);
+        //}
 
         /// <summary>
         /// Gets the number of tokens left in the enumerator.
@@ -120,37 +120,37 @@ namespace NaturalDate.Text
             get { return Math.Max(0, _tokens.Length - _index); }
         }
 
-        #region TokenEnumeratorCheckpoint
+        //#region TokenEnumeratorCheckpoint
 
-        internal class TokenEnumeratorCheckpoint : ITokenEnumeratorCheckpoint
-        {
-            readonly TokenEnumerator _tokenEnumerator;
-            readonly int _index;
+        //internal class TokenEnumeratorCheckpoint : ITokenEnumeratorCheckpoint
+        //{
+        //    readonly TokenEnumerator _tokenEnumerator;
+        //    readonly int _index;
 
-            /// <summary>
-            /// Constructor.
-            /// </summary>
-            /// <param name="tokenEnumerator">The token enumerator to create the checkpoint on.</param>
-            internal TokenEnumeratorCheckpoint(TokenEnumerator tokenEnumerator)
-            {
-                _tokenEnumerator = tokenEnumerator;
-                _index = tokenEnumerator._index;
-            }
+        //    /// <summary>
+        //    /// Constructor.
+        //    /// </summary>
+        //    /// <param name="tokenEnumerator">The token enumerator to create the checkpoint on.</param>
+        //    internal TokenEnumeratorCheckpoint(TokenEnumerator tokenEnumerator)
+        //    {
+        //        _tokenEnumerator = tokenEnumerator;
+        //        _index = tokenEnumerator._index;
+        //    }
 
-            /// <summary>
-            /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-            /// </summary>
-            public void Dispose() { }
+        //    /// <summary>
+        //    /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        //    /// </summary>
+        //    public void Dispose() { }
 
-            /// <summary>
-            /// Rollback to the previous position in the numerator.
-            /// </summary>
-            public void Rollback()
-            {
-                _tokenEnumerator._index = _index;
-            }
-        }
+        //    /// <summary>
+        //    /// Rollback to the previous position in the numerator.
+        //    /// </summary>
+        //    public void Rollback()
+        //    {
+        //        _tokenEnumerator._index = _index;
+        //    }
+        //}
 
-        #endregion TokenEnumeratorCheckpoint
+        //#endregion TokenEnumeratorCheckpoint
     }
 }

@@ -56,7 +56,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CalendarDateParserFacts.cs" />
     <Compile Include="MonthFirstDateParserFacts.cs" />
     <Compile Include="YearFirstDateParserFacts.cs" />
     <Compile Include="DayFirstDateParserFacts.cs" />
