@@ -28,13 +28,13 @@ namespace NaturalDate
         public bool TryMakeDate(IDateBuilder builder)
         {
             int day;
-            if (TryMake(TryMakeDayPart, out day))
+            if (TryMakeDayPart(out day))
             {
                 return TryMakeDateWithDay(builder, day);
             }
 
             int year;
-            if (TryMake(TryMakeYearPart, out year))
+            if (TryMake4DigitYearPart(out year))
             {
                 return TryMakeDateWithYear(builder, year);
             }
@@ -110,6 +110,16 @@ namespace NaturalDate
         }
 
         /// <summary>
+        /// Attempt to make a date starting with a month.
+        /// </summary>
+        /// <param name="builder">The date builder to populate from.</param>
+        /// <returns>true if a month first date could be made, false if not.</returns>
+        bool TryMakeDateWithMonth(IDateBuilder builder)
+        {
+            return false;
+        }
+
+        /// <summary>
         /// Attempt to make a year first date.
         /// </summary>
         /// <param name="builder">The date builder to populate from.</param>
@@ -117,18 +127,47 @@ namespace NaturalDate
         /// <returns>true if a year first date could be made, false if not.</returns>
         bool TryMakeDateWithYear(IDateBuilder builder, int year)
         {
-            //if (Enumerator.Peek().Kind == TokenKind.None)
-            //{
-            //    if (day < DateTime.DaysInMonth(builder.Year, builder.Month))
-            //    {
-            //        builder.Day = day;
-            //        return true;
-            //    }
+            builder.Year = year;
 
-            //    return false;
-            //}
+            if (Enumerator.Peek().Kind == TokenKind.None)
+            {
+                builder.Month = 1;
+                builder.Day = 1;
+                return true;
+            }
 
-            //return true;
+            Token separator;
+            if (TryMakeToken(DateSeparators, out separator) == false)
+            {
+                return false;
+            }
+
+            int month;
+            if (TryMakeMonthPart(out month) == false)
+            {
+                return false;
+            }
+
+            builder.Month = month;
+
+            if (Enumerator.Peek().Kind == TokenKind.None)
+            {
+                builder.Day = 1;
+                return true;
+            }
+
+            if (TryMakeToken(separator) == false)
+            {
+                return false;
+            }
+
+            int day;
+            if (TryMakeDayPart(out day) && day < DateTime.DaysInMonth(builder.Year, builder.Month))
+            {
+                builder.Day = day;
+                return true;
+            }
+
             return false;
         }
 
@@ -137,7 +176,7 @@ namespace NaturalDate
         /// </summary>
         /// <param name="day">The day part of a date.</param>
         /// <returns>true if a day part could be made, false if not.</returns>
-        internal bool TryMakeDayPart(out int day)
+        bool TryMakeDayPart(out int day)
         {
             return TryMakeNumeric(1, 2, out day) && day > 0 && day <= 31; 
         }
@@ -147,9 +186,9 @@ namespace NaturalDate
         /// </summary>
         /// <param name="month">The month part of a date.</param>
         /// <returns>true if a month part could be made, false if not.</returns>
-        internal bool TryMakeMonthPart(out int month)
+        bool TryMakeMonthPart(out int month)
         {
-            if (TryMake(TryMakeMonthPartNumeric, out month))
+            if (TryMakeMonthPartNumeric(out month))
             {
                 return true;
             }
@@ -162,7 +201,7 @@ namespace NaturalDate
         /// </summary>
         /// <param name="month">The month part of a date.</param>
         /// <returns>true if a month part could be made, false if not.</returns>
-        internal bool TryMakeMonthPartNumeric(out int month)
+        bool TryMakeMonthPartNumeric(out int month)
         {
             return TryMakeNumeric(1, 2, out month) && month > 0 && month <= 12;
         }
@@ -172,11 +211,11 @@ namespace NaturalDate
         /// </summary>
         /// <param name="month">The month part of a date.</param>
         /// <returns>true if a month part could be made, false if not.</returns>
-        internal bool TryMakeMonthPartText(out int month)
+        bool TryMakeMonthPartText(out int month)
         {
             month = 0;
 
-            var token = Enumerator.Take();
+            var token = Enumerator.Peek();
             if (token.Kind != TokenKind.Text)
             {
                 return false;
@@ -201,6 +240,7 @@ namespace NaturalDate
 
             if (dictionary.TryGetValue(token.Text, out month))
             {
+                Enumerator.Take();
                 return month > 0 && month <= 12;
             }
 
@@ -212,14 +252,29 @@ namespace NaturalDate
         /// </summary>
         /// <param name="year">The year part of a date.</param>
         /// <returns>true if a year part could be made, false if not.</returns>
-        internal bool TryMakeYearPart(out int year)
+        bool TryMakeYearPart(out int year)
         {
-            if (TryMakeNumeric(2, out year) || TryMakeNumeric(4, out year))
-            {
-                return year >= 0 && year <= 9999;
-            }
+            return TryMake2DigitYearPart(out year) || TryMake4DigitYearPart(out year);
+        }
 
-            return false;
+        /// <summary>
+        /// Attempt to make the year part of the date.
+        /// </summary>
+        /// <param name="year">The year part of a date.</param>
+        /// <returns>true if a year part could be made, false if not.</returns>
+        bool TryMake2DigitYearPart(out int year)
+        {
+            return TryMakeNumeric(2, out year) && year >= 0 && year <= 9999;
+        }
+
+        /// <summary>
+        /// Attempt to make the year part of the date.
+        /// </summary>
+        /// <param name="year">The year part of a date.</param>
+        /// <returns>true if a year part could be made, false if not.</returns>
+        bool TryMake4DigitYearPart(out int year)
+        {
+            return TryMakeNumeric(4, out year) && year >= 0 && year <= 9999;
         }
     }
 }

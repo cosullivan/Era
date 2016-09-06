@@ -91,7 +91,6 @@ namespace NaturalDate.Text
         {
             _index += count;
 
-            // return the last token that was consumed
             return Peek(-1);
         }
 
