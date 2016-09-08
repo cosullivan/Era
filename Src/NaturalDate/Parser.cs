@@ -57,22 +57,22 @@ namespace NaturalDate
         /// <returns>true if a date could be made, false if not.</returns>
         bool TryMakeDate(IDateTimeBuilder builder)
         {
-            if (new DayFirstDateParser(_enumerator).TryMakeDate(builder))
+            if (new DayFirstDateParser(_enumerator).TryMake(builder))
             {
                 return true;
             }
 
-            if (new MonthFirstDateParser(_enumerator).TryMakeDate(builder))
+            if (new MonthFirstDateParser(_enumerator).TryMake(builder))
             {
                 return true;
             }
 
-            if (new YearFirstDateParser(_enumerator).TryMakeDate(builder))
+            if (new YearFirstDateParser(_enumerator).TryMake(builder))
             {
                 return true;
             }
 
-            if (new NaturalDateParser(_enumerator).TryMakeDate(builder))
+            if (new NaturalDateParser(_enumerator).TryMake(builder))
             {
                 return true;
             }

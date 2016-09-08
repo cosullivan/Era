@@ -18,7 +18,7 @@ namespace NaturalDate.Facts
 
             // act
             var builder = new DateTimeBuilder(Reference);
-            var result = parser.TryMakeDate(builder);
+            var result = parser.TryMake(builder);
 
             // assert
             Assert.True(result);

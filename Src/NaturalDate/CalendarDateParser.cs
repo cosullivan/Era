@@ -4,7 +4,7 @@ using NaturalDate.Text;
 
 namespace NaturalDate
 {
-    internal abstract class CalendarDateParser : TokenParser, IDateParser
+    internal abstract class CalendarDateParser : TokenParser, IDateTimeParser
     {
         static readonly Token[] DateSeparators =
         {
@@ -23,12 +23,25 @@ namespace NaturalDate
         protected CalendarDateParser(TokenEnumerator enumerator) : base(enumerator) { }
 
         /// <summary>
-        /// Attempt to make a date.
+        /// Attempt to make a date & time.
         /// </summary>
-        /// <param name="builder">The date builder that was used to build the date.</param>
-        /// <returns>true if a date could be made, false if not.</returns>
-        public virtual bool TryMakeDate(IDateTimeBuilder builder)
+        /// <param name="builder">The date builder that was used to build the date & time.</param>
+        /// <returns>true if a date & time could be made, false if not.</returns>
+        public abstract bool TryMake(IDateTimeBuilder builder);
+
+        /// <summary>
+        /// Attempt to make a date & time.
+        /// </summary>
+        /// <param name="builder">The date builder that was used to build the date & time.</param>
+        /// <param name="year">The year to set for the date,</param>
+        /// <param name="month">The month to set for the date.</param>
+        /// <param name="day">The day to set for the date.</param>
+        /// <returns>true if a date & time could be made, false if not.</returns>
+        protected bool TryMake(IDateTimeBuilder builder, int year, int month, int day)
         {
+            builder.Year = year;
+            builder.Month = month;
+            builder.Day = day;
             builder.Hour = 0;
             builder.Minute = 0;
             builder.Second = 0;

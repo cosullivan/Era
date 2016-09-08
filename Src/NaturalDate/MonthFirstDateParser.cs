@@ -11,11 +11,11 @@ namespace NaturalDate
         internal MonthFirstDateParser(TokenEnumerator enumerator) : base(enumerator) { }
 
         /// <summary>
-        /// Attempt to make a date.
+        /// Attempt to make a date & time.
         /// </summary>
-        /// <param name="builder">The date builder that was used to build the date.</param>
-        /// <returns>true if a date could be made, false if not.</returns>
-        public override bool TryMakeDate(IDateTimeBuilder builder)
+        /// <param name="builder">The date builder that was used to build the date & time.</param>
+        /// <returns>true if a date & time could be made, false if not.</returns>
+        public override bool TryMake(IDateTimeBuilder builder)
         {
             int month;
             if (TryMakeMonthPartText(out month) == false)
@@ -25,10 +25,7 @@ namespace NaturalDate
 
             if (Enumerator.Peek().Kind == TokenKind.None)
             {
-                builder.Day = 1;
-                builder.Month = month;
-
-                return base.TryMakeDate(builder);
+                return TryMake(builder, builder.Year, month, 1);
             }
 
             if (TryMakeSeparator() == false)
@@ -39,11 +36,7 @@ namespace NaturalDate
             int year;
             if (TryMakeYearPart(out year))
             {
-                builder.Day = 1;
-                builder.Month = month;
-                builder.Year = year;
-
-                return base.TryMakeDate(builder);
+                return TryMake(builder, year, month, 1);
             }
 
             return false;

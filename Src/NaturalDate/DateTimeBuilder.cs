@@ -21,15 +21,6 @@ namespace NaturalDate
         }
 
         /// <summary>
-        /// Returns a new date builder initialized to the current time.
-        /// </summary>
-        /// <returns>The date builder that was created and initialized to the current time.</returns>
-        public static IDateTimeBuilder<DateTime> Now()
-        {
-            return new DateTimeBuilder(DateTime.Now);
-        }
-
-        /// <summary>
         /// Returns the date that has been built.
         /// </summary>
         /// <returns>The date that has been built.</returns>

@@ -62,6 +62,33 @@ namespace NaturalDate.Text
         }
 
         /// <summary>
+        /// Skips the tokens whilst they match the predicate.
+        /// </summary>
+        /// <param name="predicate">The predicate to use for evaluating whether or not to skip a token.</param>
+        /// <returns>The offset that was skipped until.</returns>
+        public int SkipWhile(Func<Token, bool> predicate)
+        {
+            var count = 0;
+
+            while (predicate(Peek(count)))
+            {
+                count++;
+            }
+
+            return count;
+        }
+
+        /// <summary>
+        /// Skips the tokens whilst the match the given token kind.
+        /// </summary>
+        /// <param name="kind">The token kind to test against to determine whether the token should be skipped.</param>
+        /// <returns>The offset that was skipped until.</returns>
+        public int SkipWhile(TokenKind kind)
+        {
+            return SkipWhile(t => t.Kind == kind);
+        }
+
+        /// <summary>
         /// Take tokens in the stream while the given predicate is true.
         /// </summary>
         /// <param name="predicate">The predicate to use for evaluating whether or not to consume a token.</param>

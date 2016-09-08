@@ -3,7 +3,7 @@ using NaturalDate.Text;
 
 namespace NaturalDate
 {
-    internal sealed class NaturalDateParser : TokenParser, IDateParser
+    internal sealed class NaturalDateParser : TokenParser, IDateTimeParser
     {
         /// <summary>
         /// Constructor.
@@ -16,7 +16,7 @@ namespace NaturalDate
         /// </summary>
         /// <param name="builder">The date builder that was is to build the date.</param>
         /// <returns>true if a date could be made, false if not.</returns>
-        public bool TryMakeDate(IDateTimeBuilder builder)
+        public bool TryMake(IDateTimeBuilder builder)
         {
             return TryMakeNow(builder) 
                 || TryMakeToday(builder) 
@@ -91,6 +91,8 @@ namespace NaturalDate
         /// <param name="days">The number of days to increment the builder by.</param>
         static void IncrementByDays(IDateTimeBuilder builder, int days)
         {
+            //var current = new DateTime(builder.Year, builder.Month, builder.Day, 0, 0, 0).AddDays(days);
+
             if (builder.Day + days < DateTime.DaysInMonth(builder.Year, builder.Month))
             {
                 builder.Day += days;

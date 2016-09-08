@@ -14,6 +14,23 @@ namespace NaturalDate
         }
 
         /// <summary>
+        /// Attempt to make the end of stream token.
+        /// </summary>
+        /// <returns>true if the enumerator has reached the end, false if not.</returns>
+        protected bool TryMakeEnd()
+        {
+            var count = Enumerator.SkipWhile(TokenKind.Space);
+
+            if (Enumerator.Peek(count) == Token.None)
+            {
+                Enumerator.Take(count);
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// Attempt to make one of the specified tokens.
         /// </summary>
         /// <param name="tokens">The list of tokens to test for a match.</param>
@@ -57,12 +74,24 @@ namespace NaturalDate
         /// Attempt to make the specific token.
         /// </summary>
         /// <param name="token">The specific token to match at the current point.</param>
+        /// <param name="offset">The offset into the future at which to make the match.</param>
         /// <returns>true if the specific separator token was made, false if not.</returns>
-        protected bool TryMakeToken(Token token)
+        protected bool CanMakeToken(Token token, int offset = 0)
         {
-            if (Enumerator.Peek() == token)
+            return Enumerator.Peek(offset) == token;
+        }
+
+        /// <summary>
+        /// Attempt to make the specific token.
+        /// </summary>
+        /// <param name="token">The specific token to match at the current point.</param>
+        /// <param name="offset">The offset into the future at which to make the match.</param>
+        /// <returns>true if the specific separator token was made, false if not.</returns>
+        protected bool TryMakeToken(Token token, int offset = 0)
+        {
+            if (Enumerator.Peek(offset) == token)
             {
-                Enumerator.Take();
+                Enumerator.Take(offset + 1);
                 return true;
             }
 

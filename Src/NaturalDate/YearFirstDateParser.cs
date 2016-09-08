@@ -12,11 +12,11 @@ namespace NaturalDate
         internal YearFirstDateParser(TokenEnumerator enumerator) : base(enumerator) { }
 
         /// <summary>
-        /// Attempt to make a date.
+        /// Attempt to make a date & time.
         /// </summary>
-        /// <param name="builder">The date builder that was used to build the date.</param>
-        /// <returns>true if a date could be made, false if not.</returns>
-        public override bool TryMakeDate(IDateTimeBuilder builder)
+        /// <param name="builder">The date builder that was used to build the date & time.</param>
+        /// <returns>true if a date & time could be made, false if not.</returns>
+        public override bool TryMake(IDateTimeBuilder builder)
         {
             int year;
             if (TryMake4DigitYearPart(out year) == false)
@@ -26,11 +26,7 @@ namespace NaturalDate
 
             if (Enumerator.Peek().Kind == TokenKind.None)
             {
-                builder.Year = year;
-                builder.Month = 1;
-                builder.Day = 1;
-
-                return base.TryMakeDate(builder);
+                return TryMake(builder, year, 1, 1);
             }
 
             if (TryMakeSeparator() == false)
@@ -46,11 +42,7 @@ namespace NaturalDate
 
             if (Enumerator.Peek().Kind == TokenKind.None)
             {
-                builder.Year = year;
-                builder.Month = month;
-                builder.Day = 1;
-
-                return base.TryMakeDate(builder);
+                return TryMake(builder, year, month, 1);
             }
 
             if (TryMakeSeparator() == false)
@@ -61,11 +53,7 @@ namespace NaturalDate
             int day;
             if (TryMakeDayPart(out day) && day < DateTime.DaysInMonth(builder.Year, builder.Month))
             {
-                builder.Year = year;
-                builder.Month = month;
-                builder.Day = day;
-
-                return base.TryMakeDate(builder);
+                return TryMake(builder, year, month, day);
             }
 
             return false;

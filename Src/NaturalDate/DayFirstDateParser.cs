@@ -12,11 +12,11 @@ namespace NaturalDate
         internal DayFirstDateParser(TokenEnumerator enumerator) : base(enumerator) { }
 
         /// <summary>
-        /// Attempt to make a date.
+        /// Attempt to make a date & time.
         /// </summary>
-        /// <param name="builder">The date builder that was used to build the date.</param>
-        /// <returns>true if a date could be made, false if not.</returns>
-        public override bool TryMakeDate(IDateTimeBuilder builder)
+        /// <param name="builder">The date builder that was used to build the date & time.</param>
+        /// <returns>true if a date & time could be made, false if not.</returns>
+        public override bool TryMake(IDateTimeBuilder builder)
         {
             int day;
             if (TryMakeDayPart(out day) == false)
@@ -28,8 +28,7 @@ namespace NaturalDate
             {
                 if (day < DateTime.DaysInMonth(builder.Year, builder.Month))
                 {
-                    builder.Day = day;
-                    return base.TryMakeDate(builder);
+                    return TryMake(builder, builder.Year, builder.Month, day);
                 }
 
                 return false;
@@ -52,8 +51,7 @@ namespace NaturalDate
 
                 if (day < DateTime.DaysInMonth(builder.Year, builder.Month))
                 {
-                    builder.Day = day;
-                    return base.TryMakeDate(builder);
+                    return TryMake(builder, builder.Year, builder.Month, day);
                 }
 
                 return false;
@@ -72,11 +70,7 @@ namespace NaturalDate
 
             if (day < DateTime.DaysInMonth(builder.Year, builder.Month))
             {
-                builder.Year = year < 100 ? 2000 + year : year;
-                builder.Month = month;
-                builder.Day = day;
-
-                return base.TryMakeDate(builder);
+                return TryMake(builder, year < 100 ? 2000 + year : year, month, day);
             }
 
             return false;

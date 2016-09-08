@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="NaturalDateParserFacts.cs" />
     <Compile Include="MonthFirstDateParserFacts.cs" />
+    <Compile Include="TimeParserFacts.cs" />
     <Compile Include="YearFirstDateParserFacts.cs" />
     <Compile Include="DayFirstDateParserFacts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
