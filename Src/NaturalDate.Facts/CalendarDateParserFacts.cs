@@ -5,7 +5,7 @@ using Xunit;
 
 namespace NaturalDate.Facts
 {
-    public sealed class DayFirstDateParserFacts
+    public sealed class CalendarDateParserFacts
     {
         static readonly DateTime Reference = new DateTime(1978, 9, 10, 14, 30, 10);
 
@@ -14,7 +14,7 @@ namespace NaturalDate.Facts
         public void Parse_CalendarDates_Success(string text, DateTime expected)
         {
             // arrange
-            var parser = new DayFirstDateParser(new TokenEnumerator(new StringTokenReader(text)));
+            var parser = new CalendarDateParser(new TokenEnumerator(new StringTokenReader(text)));
 
             // act
             var builder = new DateTimeBuilder(Reference);
@@ -40,6 +40,15 @@ namespace NaturalDate.Facts
                     new object[] { "10/sep/1978", new DateTime(1978, 9, 10, 0, 0, 0) },
                     new object[] { "12", new DateTime(Reference.Year, Reference.Month, 12, 0, 0, 0) },
                     new object[] { "12/5", new DateTime(Reference.Year, 5, 12, 0, 0, 0) },
+                    new object[] { "Sep", new DateTime(1978, 9, 1, 0, 0, 0) },
+                    new object[] { "September", new DateTime(1978, 9, 1, 0, 0, 0) },
+                    new object[] { "Sep 2002", new DateTime(2002, 9, 1, 0, 0, 0) },
+                    new object[] { "September 2002", new DateTime(2002, 9, 1, 0, 0, 0) },
+                    new object[] { "Sep/2002", new DateTime(2002, 9, 1, 0, 0, 0) },
+                    new object[] { "September/2002", new DateTime(2002, 9, 1, 0, 0, 0) },
+                    new object[] { "1978", new DateTime(1978, 1, 1, 0, 0, 0) },
+                    new object[] { "1978-Sep", new DateTime(1978, 9, 1, 0, 0, 0) },
+                    new object[] { "1978-Sep-10", new DateTime(1978, 9, 10, 0, 0, 0) },
                 };
             }
         }
