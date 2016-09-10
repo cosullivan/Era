@@ -11,7 +11,7 @@ namespace TestApp
         static void Main(string[] args)
         {
             //var input = "30/9/1999";
-            var input = "30/9/";
+            var input = "1998";
             var parser = new CalendarDateParser2(new TokenEnumerator(new StringTokenReader(input)));
 
             var builder = new DateTimeBuilder(DateTime.Now);

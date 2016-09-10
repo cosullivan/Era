@@ -6,12 +6,12 @@
 date
 	day_month_year
 	day_month 
-	day
 	month_year
 	month
 	year_month_day
 	year_month
 	year
+	day
 
 day_month_year
 	day_part separator month_part separator year_part
@@ -23,11 +23,17 @@ day
 	day_part
 
 month_year
-    month_text separator year
+	month_name_year
+    month_digit_four_digit_year
+
+month_name_year
+	month_name separator year
+
+month_digit_four_digit_year
 	month_digit separator four_digit_year
 
 month
-	month_text	
+	month_name	
 
 year_month_day
 	four_digit_year separator month separator day
@@ -44,13 +50,13 @@ day_part
 
 month_part
 	month_numeric
-	month_text
+	month_name
 
 month_numeric
 	digit digit
     digit
 
-month_text
+month_name
 	jan | feb | ...
 
 year_part

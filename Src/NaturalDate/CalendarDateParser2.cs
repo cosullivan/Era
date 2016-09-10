@@ -29,7 +29,7 @@ namespace NaturalDate
         /// <returns>true if a date & time could be made, false if not.</returns>
         public bool TryMake(IDateTimeBuilder builder)
         {
-            return TryMakeDateTime(builder);
+            return TryMakeDate(builder);
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace NaturalDate
         /// <param name="month">The month to build the date from.</param>
         /// <param name="day">The day to build the date from.</param>
         /// <returns>true if the date could be made, false if not.</returns>
-        bool TryAccept(IDateTimeBuilder builder, int year, int month, int day)
+        static bool TryAccept(IDateTimeBuilder builder, int year, int month, int day)
         {
             if (day > DateTime.DaysInMonth(year, month))
             {
@@ -49,30 +49,24 @@ namespace NaturalDate
 
             builder.Day = day;
             builder.Month = month;
-            builder.Year = year;
+            builder.Year = year < 100 ? 2000 + year : year;
 
             return true;
         }
 
-        bool TryMakeDateTime(IDateTimeBuilder builder)
-        {
-            if (TryMake(TryMakeDayFirst, builder))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
         /// <summary>
-        /// Try to make a day first date.
+        /// Try to make a date.
         /// </summary>
-        /// <param name="builder">The build to build the date from.</param>
+        /// <param name="builder">The builder to make the date from.</param>
         /// <returns>true if the date could be made, false if not.</returns>
-        bool TryMakeDayFirst(IDateTimeBuilder builder)
+        bool TryMakeDate(IDateTimeBuilder builder)
         {
             return TryMake(TryMakeDayMonthYear, builder)
                 || TryMake(TryMakeDayMonth, builder)
+                || TryMake(TryMakeMonthYear, builder)
+                || TryMake(TryMakeMonth, builder)
+                || TryMake(TryMakeYearMonthDay, builder)
+                || TryMake(TryMakeYear, builder)
                 || TryMake(TryMakeDay, builder);
         }
 
@@ -84,7 +78,7 @@ namespace NaturalDate
         bool TryMakeDayMonthYear(IDateTimeBuilder builder)
         {
             int day;
-            if (TryMake(TryMakeDayPart, out day))
+            if (TryMake(TryMakeDayPart, out day) == false)
             {
                 return false;
             }
@@ -112,7 +106,7 @@ namespace NaturalDate
                 return false;
             }
 
-            return TryAccept(builder, year < 100 ? 2000 + year : year, month, day);
+            return TryAccept(builder, year, month, day);
         }
 
         /// <summary>
@@ -123,7 +117,7 @@ namespace NaturalDate
         bool TryMakeDayMonth(IDateTimeBuilder builder)
         {
             int day;
-            if (TryMake(TryMakeDayPart, out day))
+            if (TryMake(TryMakeDayPart, out day) == false)
             {
                 return false;
             }
@@ -159,14 +153,166 @@ namespace NaturalDate
             return TryAccept(builder, builder.Year, builder.Month, day);
         }
 
-        bool TryMakeMonthFirst(IDateTimeBuilder builder)
+        /// <summary>
+        /// Try to make a month & year date.
+        /// </summary>
+        /// <param name="builder">The builder to build the date from.</param>
+        /// <returns>true if a month & year could be made, false if not.</returns>
+        bool TryMakeMonthYear(IDateTimeBuilder builder)
         {
-            return false;
+            return TryMake(TryMakeMonthNameYear, builder) || TryMake(TryMakeMonth4DigitYear, builder);
         }
 
-        bool TryMakeYearFirst(IDateTimeBuilder builder)
+        /// <summary>
+        /// Try to make a month name & year date.
+        /// </summary>
+        /// <param name="builder">The builder to build the date from.</param>
+        /// <returns>true if a month name & year could be made, false if not.</returns>
+        bool TryMakeMonthNameYear(IDateTimeBuilder builder)
         {
-            return false;
+            int month;
+            if (TryMake(TryMakeMonthName, out month) == false)
+            {
+                return false;
+            }
+
+            if (TryMakeToken(DateSeparators) == false)
+            {
+                return false;
+            }
+
+            int year;
+            if (TryMake(TryMakeYearPart, out year) == false)
+            {
+                return false;
+            }
+
+            return TryAccept(builder, year, month, 1);
+        }
+
+        /// <summary>
+        /// Try to make a month digit & 4 digit year date.
+        /// </summary>
+        /// <param name="builder">The builder to build the date from.</param>
+        /// <returns>true if a month name & 4 digit year could be made, false if not.</returns>
+        bool TryMakeMonth4DigitYear(IDateTimeBuilder builder)
+        {
+            int month;
+            if (TryMake(TryMakeMonthNumeric, out month) == false)
+            {
+                return false;
+            }
+
+            if (TryMakeToken(DateSeparators) == false)
+            {
+                return false;
+            }
+
+            int year;
+            if (TryMake(TryMake4DigitYear, out year) == false)
+            {
+                return false;
+            }
+
+            return TryAccept(builder, year, month, 1);
+        }
+
+        /// <summary>
+        /// Try to make a single month.
+        /// </summary>
+        /// <param name="builder">The builder to build from.</param>
+        /// <returns>true if the month only date could be made, false if not.</returns>
+        bool TryMakeMonth(IDateTimeBuilder builder)
+        {
+            int month;
+            if (TryMake(TryMakeMonthName, out month) == false)
+            {
+                return false;
+            }
+
+            return TryAccept(builder, builder.Year, month, 1);
+        }
+
+        /// <summary>
+        /// Try to make a year, month and day.
+        /// </summary>
+        /// <param name="builder">The date builder to build on.</param>
+        /// <returns>true if the year, month and day could be made, false if not.</returns>
+        bool TryMakeYearMonthDay(IDateTimeBuilder builder)
+        {
+            int year;
+            if (TryMake4DigitYear(out year) == false)
+            {
+                return false;
+            }
+
+            Token separator;
+            if (TryMakeToken(DateSeparators, out separator) == false)
+            {
+                return false;
+            }
+
+            int month;
+            if (TryMakeMonthPart(out month) == false)
+            {
+                return false;
+            }
+
+            if (TryMakeToken(separator) == false)
+            {
+                return false;
+            }
+
+            int day;
+            if (TryMakeDayPart(out day) == false)
+            {
+                return false;
+            }
+
+            return TryAccept(builder, year, month, day);
+        }
+
+        /// <summary>
+        /// Try to make a year, month and day.
+        /// </summary>
+        /// <param name="builder">The date builder to build on.</param>
+        /// <returns>true if the year, month and day could be made, false if not.</returns>
+        bool TryMakeYearMonth(IDateTimeBuilder builder)
+        {
+            int year;
+            if (TryMake4DigitYear(out year) == false)
+            {
+                return false;
+            }
+
+            if (TryMakeToken(DateSeparators) == false)
+            {
+                return false;
+            }
+
+            int month;
+            if (TryMakeMonthPart(out month) == false)
+            {
+                return false;
+            }
+
+            return TryAccept(builder, year, month, 1);
+        }
+
+        /// <summary>
+        /// Try to make a year, month and day.
+        /// </summary>
+        /// <param name="builder">The date builder to build on.</param>
+        /// <returns>true if the year, month and day could be made, false if not.</returns>
+        bool TryMakeYear(IDateTimeBuilder builder)
+        {
+            int year;
+            if (TryMake4DigitYear(out year) == false)
+            {
+                return false;
+            }
+
+            return TryAccept(builder, year, 1, 1);
         }
 
         /// <summary>
@@ -191,7 +337,7 @@ namespace NaturalDate
         /// <returns>true if a month part could be made, false if not.</returns>
         bool TryMakeMonthPart(out int month)
         {
-            return TryMake(TryMakeMonthNumeric, out month) || TryMake(TryMakeMonthText, out month);
+            return TryMake(TryMakeMonthNumeric, out month) || TryMake(TryMakeMonthName, out month);
         }
 
         /// <summary>
@@ -244,7 +390,7 @@ namespace NaturalDate
         /// </summary>
         /// <param name="month">The month part of a date.</param>
         /// <returns>true if a month part could be made, false if not.</returns>
-        bool TryMakeMonthText(out int month)
+        bool TryMakeMonthName(out int month)
         {
             month = 0;
 
