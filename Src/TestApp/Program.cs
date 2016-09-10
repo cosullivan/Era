@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Text;
 using NaturalDate;
+using NaturalDate.Text;
 
 namespace TestApp
 {
@@ -9,9 +10,17 @@ namespace TestApp
     {
         static void Main(string[] args)
         {
-            DateTime date;
-            Parser.TryParse("1/Feb/1978 10 am", out date);
-            Console.WriteLine(date);
+            //var input = "30/9/1999";
+            var input = "30/9/";
+            var parser = new CalendarDateParser2(new TokenEnumerator(new StringTokenReader(input)));
+
+            var builder = new DateTimeBuilder(DateTime.Now);
+            Console.WriteLine(parser.TryMake(builder));
+            Console.WriteLine(builder.Build());
+
+            //DateTime date;
+            //Parser.TryParse("1/Feb/1978 10 am", out date);
+            //Console.WriteLine(date);
 
             //Parser.TryParse("1", out date);
             //Console.WriteLine(date);

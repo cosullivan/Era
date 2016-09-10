@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace NaturalDate.Text
 {
     public sealed class TokenEnumerator
     {
         readonly Token[] _tokens;
-        int _index = 0;
-
+        
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -53,9 +53,9 @@ namespace NaturalDate.Text
         /// <returns>The token at the given number of tokens past the current index, or Token.None if no token exists.</returns>
         public Token Peek(int count = 0)
         {
-            if (_index + count < _tokens.Length)
+            if (Index + count < _tokens.Length)
             {
-                return _tokens[_index + count];
+                return _tokens[Index + count];
             }
 
             return Token.None;
@@ -116,26 +116,14 @@ namespace NaturalDate.Text
         /// <returns>The last token that was consumed.</returns>
         public Token Take(int count = 1)
         {
-            _index += count;
+            Index += count;
 
             return Peek(-1);
         }
-
+        
         /// <summary>
-        /// Returns a text string which is the combined tokens.
+        /// Gets the current index into the enumerator.
         /// </summary>
-        /// <returns>The string</returns>
-        public string AsText()
-        {
-            return String.Concat(_tokens.Select(t => t.Text));
-        }
-
-        /// <summary>
-        /// Gets the number of tokens left in the enumerator.
-        /// </summary>
-        public int Count
-        {
-            get { return Math.Max(0, _tokens.Length - _index); }
-        }
+        public int Index { get; internal set; }
     }
 }

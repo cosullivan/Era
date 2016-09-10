@@ -1,0 +1,71 @@
+﻿datetime
+	date
+	time
+	date time
+
+date
+	day_month_year
+	day_month 
+	day
+	month_year
+	month
+	year_month_day
+	year_month
+	year
+
+day_month_year
+	day_part separator month_part separator year_part
+
+day_month 
+	day_part separator month_part
+
+day
+	day_part
+
+month_year
+    month_text separator year
+	month_digit separator four_digit_year
+
+month
+	month_text	
+
+year_month_day
+	four_digit_year separator month separator day
+
+year_month
+	four_digit_year separator month
+
+year
+	four_digit_year
+
+day_part
+	digit digit
+    digit
+
+month_part
+	month_numeric
+	month_text
+
+month_numeric
+	digit digit
+    digit
+
+month_text
+	jan | feb | ...
+
+year_part
+	four_digit_year
+	two_digit_year
+
+separator
+	-
+	.
+	/
+
+four_digit_year
+	digit digit digit digit
+
+two_digit_year
+	digit digit
+
+digit = [0-9]

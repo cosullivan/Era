@@ -18,6 +18,11 @@
         Number,
 
         /// <summary>
+        /// A number.
+        /// </summary>
+        Digit,
+
+        /// <summary>
         /// A symbol.
         /// </summary>
         Symbol,

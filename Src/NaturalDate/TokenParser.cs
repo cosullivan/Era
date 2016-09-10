@@ -4,6 +4,11 @@ namespace NaturalDate
 {
     public abstract class TokenParser
     {
+        protected delegate bool TryMakeDelegate1<in TIn>(TIn p1);
+        protected delegate bool TryMakeDelegate2<TOut>(out TOut p1);
+        protected delegate bool TryMakeDelegate3<in TIn, TOut>(TIn p1, out TOut p2);
+        protected delegate bool TryMakeDelegate4<in TIn1, in TIn2, TOut>(TIn1 p1, TIn2 p2, out TOut p3);
+
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -129,6 +134,85 @@ namespace NaturalDate
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Try to make a callback in a transactional way.
+        /// </summary>
+        /// <param name="delegate">The callback to perform the match.</param>
+        /// <param name="p1">The parameter to pass to the matching function.</param>
+        /// <returns>true if the match could be made, false if not.</returns>
+        protected bool TryMake<TIn>(TryMakeDelegate1<TIn> @delegate, TIn p1)
+        {
+            var index = Enumerator.Index;
+
+            if (@delegate(p1) == false)
+            {
+                Enumerator.Index = index;
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Try to make a callback in a transactional way.
+        /// </summary>
+        /// <param name="delegate">The callback to perform the match.</param>
+        /// <param name="p1">The parameter that was returned from the matching function.</param>
+        /// <returns>true if the match could be made, false if not.</returns>
+        protected bool TryMake<TOut>(TryMakeDelegate2<TOut> @delegate, out TOut p1)
+        {
+            var index = Enumerator.Index;
+
+            if (@delegate(out p1) == false)
+            {
+                Enumerator.Index = index;
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Try to make a callback in a transactional way.
+        /// </summary>
+        /// <param name="delegate">The callback to perform the match.</param>
+        /// <param name="p1">The parameter to pass to the matching function.</param>
+        /// <param name="p2">The parameter that was returned from the matching function.</param>
+        /// <returns>true if the match could be made, false if not.</returns>
+        protected bool TryMake<TIn, TOut>(TryMakeDelegate3<TIn, TOut> @delegate, TIn p1, out TOut p2)
+        {
+            var index = Enumerator.Index;
+
+            if (@delegate(p1, out p2) == false)
+            {
+                Enumerator.Index = index;
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Try to make a callback in a transactional way.
+        /// </summary>
+        /// <param name="delegate">The callback to perform the match.</param>
+        /// <param name="p1">The first parameter to pass to the matching function.</param>
+        /// <param name="p2">The second parameter to pass to the matching function.</param>
+        /// <param name="p3">The parameter that was returned from the matching function.</param>
+        /// <returns>true if the match could be made, false if not.</returns>
+        protected bool TryMake<TIn1, TIn2, TOut>(TryMakeDelegate4<TIn1, TIn2, TOut> @delegate, TIn1 p1, TIn2 p2, out TOut p3)
+        {
+            var index = Enumerator.Index;
+
+            if (@delegate(p1, p2, out p3) == false)
+            {
+                Enumerator.Index = index;
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>

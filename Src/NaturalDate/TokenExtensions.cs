@@ -12,7 +12,7 @@ namespace NaturalDate
         /// <returns>The integer value that represents the token.</returns>
         internal static int AsInteger(this Token token)
         {
-            if (token.Kind != TokenKind.Number)
+            if (token.Kind != TokenKind.Digit)
             {
                 throw new ArgumentException(nameof(token));
             }
