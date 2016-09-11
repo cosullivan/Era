@@ -56,33 +56,34 @@ namespace TestApp
             //Parser.TryParse("Thursday", out date);
             //Console.WriteLine(date);
 
-            //5445
-
             //RunBenchmarks();
         }
 
         static void RunBenchmarks()
         {
-            Console.WriteLine("System.DateTime");
-            Console.WriteLine("  Time Taken {0}ms", RunBenchmark(DateTimeParse));
-            Console.WriteLine("  Time Taken {0}ms", RunBenchmark(DateTimeParse));
-            Console.WriteLine("  Time Taken {0}ms", RunBenchmark(DateTimeParse));
-
-            Console.WriteLine();
-
-            Console.WriteLine("NaturalDate");
-            Console.WriteLine("  Time Taken {0}ms", RunBenchmark(ParserTryParse));
-            Console.WriteLine("  Time Taken {0}ms", RunBenchmark(ParserTryParse));
-            Console.WriteLine("  Time Taken {0}ms", RunBenchmark(ParserTryParse));
-
-            Console.WriteLine();
-
-            Console.WriteLine("Chronic");
-            Console.WriteLine("  Time Taken {0}ms", RunBenchmark(ChronicParse));
-            Console.WriteLine("  Time Taken {0}ms", RunBenchmark(ChronicParse));
-            Console.WriteLine("  Time Taken {0}ms", RunBenchmark(ChronicParse));
+            //RunBenchmark("System.DateTime", DateTimeParse);
+            RunBenchmark("NaturalDate", ParserTryParse);
+            //RunBenchmark("Chronic", ChronicParse);
         }
 
+        static void RunBenchmark(string name, Action<int> callback, int iterations = 1000)
+        {
+            Console.WriteLine();
+            Console.WriteLine(name);
+
+            decimal total = 0;
+            for (var i = 0; i < 5; i++)
+            {
+                var benchmark = RunBenchmark(callback);
+
+                Console.WriteLine("  Time Taken {0}ms", benchmark);
+
+                total += benchmark;
+            }
+
+            Console.WriteLine("  Avg Time {0}ms", Decimal.Round(total / 5, 2));
+        }
+        
         static long RunBenchmark(Action<int> callback, int iterations = 1000)
         {
             var stopwatch = Stopwatch.StartNew();

@@ -7,7 +7,7 @@ namespace NaturalDate.Facts
 {
     public sealed class CalendarDateParserFacts
     {
-        static readonly DateTime Reference = new DateTime(1978, 9, 10, 14, 30, 10);
+        static readonly DateTime Reference = new DateTime(1978, 9, 10, 14, 30, 10); // Sunday
 
         [Theory]
         [MemberData(nameof(TheoryValues))]
@@ -59,9 +59,17 @@ namespace NaturalDate.Facts
                     new object[] { "12 AM", new DateTime(Reference.Year, Reference.Month, Reference.Day, 0, 0, 0) },
                     new object[] { "12 PM", new DateTime(Reference.Year, Reference.Month, Reference.Day, 12, 0, 0) },
                     new object[] { "11/10/1978 3:45:54 AM", new DateTime(1978, 10, 11, 3, 45, 54) },
+                    new object[] { "now", Reference },
                     new object[] { "today", new DateTime(Reference.Year, Reference.Month, Reference.Day, 0, 0, 0) },
                     new object[] { "tomorrow", new DateTime(Reference.Year, Reference.Month, Reference.Day, 0, 0, 0).AddDays(1) },
                     new object[] { "yesterday", new DateTime(Reference.Year, Reference.Month, Reference.Day, 0, 0, 0).AddDays(-1) },
+                    new object[] { "sunday", new DateTime(Reference.Year, Reference.Month, Reference.Day, 0, 0, 0).AddDays(7) },
+                    new object[] { "monday", new DateTime(Reference.Year, Reference.Month, Reference.Day, 0, 0, 0).AddDays(1) },
+                    new object[] { "tuesday", new DateTime(Reference.Year, Reference.Month, Reference.Day, 0, 0, 0).AddDays(2) },
+                    new object[] { "wednesday", new DateTime(Reference.Year, Reference.Month, Reference.Day, 0, 0, 0).AddDays(3) },
+                    new object[] { "thursday", new DateTime(Reference.Year, Reference.Month, Reference.Day, 0, 0, 0).AddDays(4) },
+                    new object[] { "friday", new DateTime(Reference.Year, Reference.Month, Reference.Day, 0, 0, 0).AddDays(5) },
+                    new object[] { "saturday", new DateTime(Reference.Year, Reference.Month, Reference.Day, 0, 0, 0).AddDays(6) },
                 };
             }
         }

@@ -35,16 +35,46 @@ namespace NaturalDate
         /// <returns>true if a date & time could be made, false if not.</returns>
         public bool TryMake(IDateTimeBuilder builder)
         {
-            return (TryMake(TryMakeDateTime, builder) && TryMakeEnd())
-                || (TryMake(TryMakeDate, builder) && TryMakeEnd())
-                || (TryMake(TryMakeTime, builder) && TryMakeEnd())
-                || (TryMake(TryMakeSingleDay, builder) && TryMakeEnd());
+            return TryMakeWithEnd(TryMakeDateTime, builder)
+                || TryMakeWithEnd(TryMakeDate, builder)
+                || TryMakeWithEnd(TryMakeTime, builder)
+                || TryMakeWithEnd(TryMakeSingleDay, builder)
+                || TryMakeWithEnd(TryMakeNow, builder);
+        }
+
+        /// <summary>
+        /// Attempt to make a top level match that includes the end of stream.
+        /// </summary>
+        /// <param name="tryMakeFunction">The function to perform the match.</param>
+        /// <param name="builder">The builder to accept the changes on.</param>
+        /// <returns>true if the function was matched successfully, false if not.</returns>
+        bool TryMakeWithEnd(TryMakeDelegate1<ParseContext> tryMakeFunction, IDateTimeBuilder builder)
+        {
+            var context = new ParseContext(builder);
+            var index = Enumerator.Index;
+
+            Enumerator.TakeWhile(TokenKind.Space);
+
+            if (tryMakeFunction(context) && TryMakeEnd())
+            {
+                builder.Year = context.Year;
+                builder.Month = context.Month;
+                builder.Day = context.Day;
+                builder.Hour = context.Hour;
+                builder.Minute = context.Minute;
+                builder.Second = context.Second;
+
+                return true;
+            }
+
+            Enumerator.Index = index;
+            return false;
         }
 
         /// <summary>
         /// Try to make the date with the given inputs.
         /// </summary>
-        /// <param name="builder">The builder to build the date from.</param>
+        /// <param name="context">The parsing context to build the date from.</param>
         /// <param name="year">The year to build the date from.</param>
         /// <param name="month">The month to build the date from.</param>
         /// <param name="day">The day to build the date from.</param>
@@ -52,7 +82,7 @@ namespace NaturalDate
         /// <param name="minute">The minute to build the time from.</param>
         /// <param name="second">The second to build the time from.</param>
         /// <returns>true if the date could be made, false if not.</returns>
-        static bool TryAccept(IDateTimeBuilder builder, int year, int month, int day, int hour = 0, int minute = 0, int second = 0)
+        static bool TryAccept(ParseContext context, int year, int month, int day, int hour = 0, int minute = 0, int second = 0)
         {
             year = year < 100 ? 2000 + year : year;
 
@@ -61,12 +91,12 @@ namespace NaturalDate
                 return false;
             }
 
-            builder.Year = year;
-            builder.Month = month;
-            builder.Day = day;
-            builder.Hour = hour;
-            builder.Minute = minute;
-            builder.Second = second;
+            context.Year = year;
+            context.Month = month;
+            context.Day = day;
+            context.Hour = hour;
+            context.Minute = minute;
+            context.Second = second;
 
             return true;
         }
@@ -74,132 +104,168 @@ namespace NaturalDate
         /// <summary>
         /// Try to make the date based on a relative day to the current day.
         /// </summary>
-        /// <param name="builder">The builder to build the date from.</param>
+        /// <param name="context">The parsing context to build the date from.</param>
         /// <param name="value">The positive or negative timespan in days to add to the current builder day.</param>
         /// <returns>true if the date could be made, false if not.</returns>
-        static bool TryAccept(IDateTimeBuilder builder, TimeSpan value)
+        static bool TryAccept(ParseContext context, TimeSpan value)
         {
-            var current = builder.DateTime().Date.Add(value);
+            var current = context.DateTime().Date.Add(value);
 
-            return TryAccept(builder, current.Year, current.Month, current.Day, 0, 0, 0);
+            return TryAccept(context, current.Year, current.Month, current.Day, 0, 0, 0);
         }
 
         /// <summary>
         /// Try to make the date with the given inputs.
         /// </summary>
-        /// <param name="builder">The builder to build the date from.</param>
+        /// <param name="context">The parsing context to build the date from.</param>
         /// <param name="hour">The hour to build the time from.</param>
         /// <param name="minute">The minute to build the time from.</param>
         /// <param name="second">The second to build the time from.</param>
         /// <returns>true if the date could be made, false if not.</returns>
-        static bool TryAcceptTime(IDateTimeBuilder builder, int hour, int minute, int second)
+        static bool TryAcceptTime(ParseContext context, int hour, int minute, int second)
         {
-            return TryAccept(builder, builder.Year, builder.Month, builder.Day, hour, minute, second);
+            return TryAccept(context, context.Year, context.Month, context.Day, hour, minute, second);
         }
 
         /// <summary>
         /// Try to make a date.
         /// </summary>
-        /// <param name="builder">The builder to make the date from.</param>
+        /// <param name="context">The parsing context to build the date from.</param>
         /// <returns>true if the date could be made, false if not.</returns>
-        bool TryMakeDateTime(IDateTimeBuilder builder)
+        bool TryMakeDateTime(ParseContext context)
         {
-            Enumerator.TakeWhile(TokenKind.Space);
-
-            return TryMakeDate(builder) && TryMakeTime(builder);
+            return TryMakeDate(context) && TryMakeTime(context);
         }
 
         /// <summary>
         /// Try to make a date.
         /// </summary>
-        /// <param name="builder">The builder to make the date from.</param>
+        /// <param name="context">The parsing context to build the date from.</param>
         /// <returns>true if the date could be made, false if not.</returns>
-        bool TryMakeDate(IDateTimeBuilder builder)
+        bool TryMakeDate(ParseContext context)
         {
             Enumerator.TakeWhile(TokenKind.Space);
 
-            return TryMake(TryMakeDayMonthYear, builder)
-                || TryMake(TryMakeDayMonth, builder)
-                || TryMake(TryMakeMonthYear, builder)
-                || TryMake(TryMakeMonth, builder)
-                || TryMake(TryMakeYearMonthDay, builder)
-                || TryMake(TryMakeYearMonth, builder)
-                || TryMake(TryMakeYear, builder)
-                || TryMake(TryMakeToday, builder)
-                || TryMake(TryMakeTomorrow, builder)
-                || TryMake(TryMakeYesterday, builder);
+            return TryMake(TryMakeDayMonthYear, context)
+                || TryMake(TryMakeDayMonth, context)
+                || TryMake(TryMakeMonthYear, context)
+                || TryMake(TryMakeMonth, context)
+                || TryMake(TryMakeYearMonthDay, context)
+                || TryMake(TryMakeYearMonth, context)
+                || TryMake(TryMakeYear, context)
+                || TryMake(TryMakeToday, context)
+                || TryMake(TryMakeTomorrow, context)
+                || TryMake(TryMakeYesterday, context)
+                || TryMake(TryMakeDayOfWeek, context);
         }
 
         /// <summary>
         /// Try to make a time.
         /// </summary>
-        /// <param name="builder">The builder to make the time from.</param>
+        /// <param name="context">The parsing context to build the date from.</param>
         /// <returns>true if the time could be made, false if not.</returns>
-        bool TryMakeTime(IDateTimeBuilder builder)
+        bool TryMakeTime(ParseContext context)
         {
             Enumerator.TakeWhile(TokenKind.Space);
 
-            return TryMake(TryMake12HourMinuteSecond, builder)
-                || TryMake(TryMake24HourMinuteSecond, builder)
-                || TryMake(TryMake12HourMinute, builder)
-                || TryMake(TryMake24HourMinute, builder)
-                || TryMake(TryMake12Hour, builder);
+            return TryMake(TryMake12HourMinuteSecond, context)
+                || TryMake(TryMake24HourMinuteSecond, context)
+                || TryMake(TryMake12HourMinute, context)
+                || TryMake(TryMake24HourMinute, context)
+                || TryMake(TryMake12Hour, context);
         }
 
         /// <summary>
         /// Try to make a time.
         /// </summary>
-        /// <param name="builder">The builder to make the time from.</param>
+        /// <param name="context">The parsing context to build the date from.</param>
         /// <returns>true if the time could be made, false if not.</returns>
-        bool TryMakeSingleDay(IDateTimeBuilder builder)
+        bool TryMakeSingleDay(ParseContext context)
         {
             Enumerator.TakeWhile(TokenKind.Space);
 
-            return TryMake(TryMakeDay, builder);
+            return TryMake(TryMakeDay, context);
+        }
+
+        /// <summary>
+        /// Try to make a time.
+        /// </summary>
+        /// <param name="context">The parsing context to build the date from.</param>
+        /// <returns>true if the time could be made, false if not.</returns>
+        bool TryMakeNow(ParseContext context)
+        {
+            Enumerator.TakeWhile(TokenKind.Space);
+
+            return Enumerator.Take() == new Token(TokenKind.Text, "now");
         }
 
         /// <summary>
         /// Try to make today.
         /// </summary>
-        /// <param name="builder">The builder to make the date and time from.</param>
+        /// <param name="context">The parsing context to build the date from.</param>
         /// <returns>true if the date and time could be made, false if not.</returns>
-        bool TryMakeToday(IDateTimeBuilder builder)
+        bool TryMakeToday(ParseContext context)
         {
             var token = new Token(TokenKind.Text, "today");
 
-            return Enumerator.Take() == token && TryAccept(builder, TimeSpan.Zero);
+            return Enumerator.Take() == token && TryAccept(context, TimeSpan.Zero);
         }
 
         /// <summary>
         /// Try to make tomorrow.
         /// </summary>
-        /// <param name="builder">The builder to make the date and time from.</param>
+        /// <param name="context">The parsing context to build the date from.</param>
         /// <returns>true if the date and time could be made, false if not.</returns>
-        bool TryMakeTomorrow(IDateTimeBuilder builder)
+        bool TryMakeTomorrow(ParseContext context)
         {
             var token = new Token(TokenKind.Text, "tomorrow");
 
-            return Enumerator.Take() == token && TryAccept(builder, TimeSpan.FromDays(1));
+            return Enumerator.Take() == token && TryAccept(context, TimeSpan.FromDays(1));
         }
 
         /// <summary>
         /// Try to make tomorrow.
         /// </summary>
-        /// <param name="builder">The builder to make the date and time from.</param>
+        /// <param name="context">The parsing context to build the date from.</param>
         /// <returns>true if the date and time could be made, false if not.</returns>
-        bool TryMakeYesterday(IDateTimeBuilder builder)
+        bool TryMakeYesterday(ParseContext context)
         {
             var token = new Token(TokenKind.Text, "yesterday");
 
-            return Enumerator.Take() == token && TryAccept(builder, TimeSpan.FromDays(-1));
+            return Enumerator.Take() == token && TryAccept(context, TimeSpan.FromDays(-1));
+        }
+
+        /// <summary>
+        /// Try to make a day of the week.
+        /// </summary>
+        /// <param name="context">The parsing context to build the date from.</param>
+        /// <returns>true if the date and time could be made, false if not.</returns>
+        bool TryMakeDayOfWeek(ParseContext context)
+        {
+            var token = Enumerator.Take();
+
+            DayOfWeek dayOfWeek;
+            if (token.Kind != TokenKind.Text || Enum.TryParse(token.Text, true, out dayOfWeek) == false)
+            {
+                return false;
+            }
+
+            var current = context.DateTime();
+
+            if (current.DayOfWeek >= dayOfWeek)
+            {
+                return TryAccept(context, TimeSpan.FromDays(7 - (current.DayOfWeek - dayOfWeek)));
+            }
+
+            return TryAccept(context, TimeSpan.FromDays(dayOfWeek - current.DayOfWeek));
         }
 
         /// <summary>
         /// Try to make a day, month and year date.
         /// </summary>
-        /// <param name="builder">The builder to build from.</param>
+        /// <param name="context">The parsing context to build the date from.</param>
         /// <returns>true if the day, month and year date could be made, false if not.</returns>
-        bool TryMakeDayMonthYear(IDateTimeBuilder builder)
+        bool TryMakeDayMonthYear(ParseContext context)
         {
             int day;
             if (TryMake(TryMakeDayPart, out day) == false)
@@ -230,15 +296,15 @@ namespace NaturalDate
                 return false;
             }
 
-            return TryAccept(builder, year, month, day);
+            return TryAccept(context, year, month, day);
         }
 
         /// <summary>
         /// Try to make a day and month.
         /// </summary>
-        /// <param name="builder">The builder to build from.</param>
+        /// <param name="context">The parsing context to build the date from.</param>
         /// <returns>true if the day and month only date could be made, false if not.</returns>
-        bool TryMakeDayMonth(IDateTimeBuilder builder)
+        bool TryMakeDayMonth(ParseContext context)
         {
             int day;
             if (TryMake(TryMakeDayPart, out day) == false)
@@ -257,15 +323,15 @@ namespace NaturalDate
                 return false;
             }
 
-            return TryAccept(builder, builder.Year, month, day);
+            return TryAccept(context, context.Year, month, day);
         }
 
         /// <summary>
         /// Try to make a single day.
         /// </summary>
-        /// <param name="builder">The builder to build from.</param>
+        /// <param name="context">The parsing context to build the date from.</param>
         /// <returns>true if the day only date could be made, false if not.</returns>
-        bool TryMakeDay(IDateTimeBuilder builder)
+        bool TryMakeDay(ParseContext context)
         {
             int day;
             if (TryMake(TryMakeDayPart, out day) == false)
@@ -273,25 +339,25 @@ namespace NaturalDate
                 return false;
             }
 
-            return TryAccept(builder, builder.Year, builder.Month, day);
+            return TryAccept(context, context.Year, context.Month, day);
         }
 
         /// <summary>
         /// Try to make a month & year date.
         /// </summary>
-        /// <param name="builder">The builder to build the date from.</param>
+        /// <param name="context">The parsing context to build the date from.</param>
         /// <returns>true if a month & year could be made, false if not.</returns>
-        bool TryMakeMonthYear(IDateTimeBuilder builder)
+        bool TryMakeMonthYear(ParseContext context)
         {
-            return TryMake(TryMakeMonthNameYear, builder) || TryMake(TryMakeMonth4DigitYear, builder);
+            return TryMake(TryMakeMonthNameYear, context) || TryMake(TryMakeMonth4DigitYear, context);
         }
 
         /// <summary>
         /// Try to make a month name & year date.
         /// </summary>
-        /// <param name="builder">The builder to build the date from.</param>
+        /// <param name="context">The parsing context to build the date from.</param>
         /// <returns>true if a month name & year could be made, false if not.</returns>
-        bool TryMakeMonthNameYear(IDateTimeBuilder builder)
+        bool TryMakeMonthNameYear(ParseContext context)
         {
             int month;
             if (TryMakeMonthName(out month) == false)
@@ -310,15 +376,15 @@ namespace NaturalDate
                 return false;
             }
 
-            return TryAccept(builder, year, month, 1);
+            return TryAccept(context, year, month, 1);
         }
 
         /// <summary>
         /// Try to make a month digit & 4 digit year date.
         /// </summary>
-        /// <param name="builder">The builder to build the date from.</param>
+        /// <param name="context">The parsing context to build the date from.</param>
         /// <returns>true if a month name & 4 digit year could be made, false if not.</returns>
-        bool TryMakeMonth4DigitYear(IDateTimeBuilder builder)
+        bool TryMakeMonth4DigitYear(ParseContext context)
         {
             int month;
             if (TryMakeMonthNumeric(out month) == false)
@@ -337,15 +403,15 @@ namespace NaturalDate
                 return false;
             }
 
-            return TryAccept(builder, year, month, 1);
+            return TryAccept(context, year, month, 1);
         }
 
         /// <summary>
         /// Try to make a single month.
         /// </summary>
-        /// <param name="builder">The builder to build from.</param>
+        /// <param name="context">The parsing context to build the date from.</param>
         /// <returns>true if the month only date could be made, false if not.</returns>
-        bool TryMakeMonth(IDateTimeBuilder builder)
+        bool TryMakeMonth(ParseContext context)
         {
             int month;
             if (TryMakeMonthName(out month) == false)
@@ -353,15 +419,15 @@ namespace NaturalDate
                 return false;
             }
 
-            return TryAccept(builder, builder.Year, month, 1);
+            return TryAccept(context, context.Year, month, 1);
         }
 
         /// <summary>
         /// Try to make a year, month and day.
         /// </summary>
-        /// <param name="builder">The date builder to build on.</param>
+        /// <param name="context">The parsing context to build the date from.</param>
         /// <returns>true if the year, month and day could be made, false if not.</returns>
-        bool TryMakeYearMonthDay(IDateTimeBuilder builder)
+        bool TryMakeYearMonthDay(ParseContext context)
         {
             int year;
             if (TryMake4DigitYear(out year) == false)
@@ -392,15 +458,15 @@ namespace NaturalDate
                 return false;
             }
 
-            return TryAccept(builder, year, month, day);
+            return TryAccept(context, year, month, day);
         }
 
         /// <summary>
         /// Try to make a year, month and day.
         /// </summary>
-        /// <param name="builder">The date builder to build on.</param>
+        /// <param name="context">The parsing context to build the date from.</param>
         /// <returns>true if the year, month and day could be made, false if not.</returns>
-        bool TryMakeYearMonth(IDateTimeBuilder builder)
+        bool TryMakeYearMonth(ParseContext context)
         {
             int year;
             if (TryMake4DigitYear(out year) == false)
@@ -419,15 +485,15 @@ namespace NaturalDate
                 return false;
             }
 
-            return TryAccept(builder, year, month, 1);
+            return TryAccept(context, year, month, 1);
         }
 
         /// <summary>
         /// Try to make a year, month and day.
         /// </summary>
-        /// <param name="builder">The date builder to build on.</param>
+        /// <param name="context">The parsing context to build the date from.</param>
         /// <returns>true if the year, month and day could be made, false if not.</returns>
-        bool TryMakeYear(IDateTimeBuilder builder)
+        bool TryMakeYear(ParseContext context)
         {
             int year;
             if (TryMake4DigitYear(out year) == false)
@@ -435,7 +501,7 @@ namespace NaturalDate
                 return false;
             }
 
-            return TryAccept(builder, year, 1, 1);
+            return TryAccept(context, year, 1, 1);
         }
 
         /// <summary>
@@ -562,9 +628,9 @@ namespace NaturalDate
         /// <summary>
         /// Attempt to make a 12 time in the 12 hour format with minutes and seconds.
         /// </summary>
-        /// <param name="builder">The builder to build the time on.</param>
+        /// <param name="context">The parsing context to build the date from.</param>
         /// <returns>true if the time could be made, false if not.</returns>
-        bool TryMake12HourMinuteSecond(IDateTimeBuilder builder)
+        bool TryMake12HourMinuteSecond(ParseContext context)
         {
             int hour;
             if (TryMake12HourPart(out hour) == false)
@@ -600,15 +666,15 @@ namespace NaturalDate
                 return false;
             }
 
-            return TryAcceptTime(builder, hour, minute, second);
+            return TryAcceptTime(context, hour, minute, second);
         }
 
         /// <summary>
         /// Attempt to make a time in the 24 hour format with minutes and seconds.
         /// </summary>
-        /// <param name="builder">The builder to build the time on.</param>
+        /// <param name="context">The parsing context to build the date from.</param>
         /// <returns>true if the time could be made, false if not.</returns>
-        bool TryMake24HourMinuteSecond(IDateTimeBuilder builder)
+        bool TryMake24HourMinuteSecond(ParseContext context)
         {
             int hour;
             if (TryMake24HourPart(out hour) == false)
@@ -639,15 +705,15 @@ namespace NaturalDate
                 return false;
             }
 
-            return TryAcceptTime(builder, hour, minute, second);
+            return TryAcceptTime(context, hour, minute, second);
         }
 
         /// <summary>
         /// Attempt to make a time in the 12 hour format with minutes.
         /// </summary>
-        /// <param name="builder">The builder to build the time on.</param>
+        /// <param name="context">The parsing context to build the date from.</param>
         /// <returns>true if the time could be made, false if not.</returns>
-        bool TryMake12HourMinute(IDateTimeBuilder builder)
+        bool TryMake12HourMinute(ParseContext context)
         {
             int hour;
             if (TryMake12HourPart(out hour) == false)
@@ -672,15 +738,15 @@ namespace NaturalDate
                 return false;
             }
 
-            return TryAcceptTime(builder, hour, minute, 0);
+            return TryAcceptTime(context, hour, minute, 0);
         }
 
         /// <summary>
         /// Attempt to make a time in the 24 hour format with minutes.
         /// </summary>
-        /// <param name="builder">The builder to build the time on.</param>
+        /// <param name="context">The parsing context to build the date from.</param>
         /// <returns>true if the time could be made, false if not.</returns>
-        bool TryMake24HourMinute(IDateTimeBuilder builder)
+        bool TryMake24HourMinute(ParseContext context)
         {
             int hour;
             if (TryMake24HourPart(out hour) == false)
@@ -700,15 +766,15 @@ namespace NaturalDate
                 return false;
             }
 
-            return TryAcceptTime(builder, hour, minute, 0);
+            return TryAcceptTime(context, hour, minute, 0);
         }
 
         /// <summary>
         /// Attempt to make a time in the 12 hour format with only the hour portion.
         /// </summary>
-        /// <param name="builder">The builder to build the time on.</param>
+        /// <param name="context">The parsing context to build the date from.</param>
         /// <returns>true if the time could be made, false if not.</returns>
-        bool TryMake12Hour(IDateTimeBuilder builder)
+        bool TryMake12Hour(ParseContext context)
         {
             int hour;
             if (TryMake12HourPart(out hour) == false)
@@ -721,7 +787,7 @@ namespace NaturalDate
                 return false;
             }
 
-            return TryAcceptTime(builder, hour, 0, 0);
+            return TryAcceptTime(context, hour, 0, 0);
         }
 
         /// <summary>

@@ -51,7 +51,6 @@
     <Compile Include="IDateTimeParser.cs" />
     <Compile Include="ParseContext.cs" />
     <Compile Include="Parser.cs" />
-    <Compile Include="NaturalDateParser.cs" />
     <Compile Include="IDateTimeBuilder.cs" />
     <Compile Include="TokenParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

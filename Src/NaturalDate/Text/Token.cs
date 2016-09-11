@@ -50,7 +50,7 @@ namespace NaturalDate.Text
         /// <returns>true if <paramref name="other"/> and this instance are the same type and represent the same value; otherwise, false. </returns>
         public bool Equals(Token other)
         {
-            return String.Equals(Text, other.Text, StringComparison.InvariantCultureIgnoreCase) && Kind == other.Kind;
+            return Kind == other.Kind && String.Equals(Text, other.Text, StringComparison.InvariantCultureIgnoreCase);
         }
 
         /// <summary>
