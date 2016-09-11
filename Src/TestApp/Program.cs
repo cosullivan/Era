@@ -10,48 +10,9 @@ namespace TestApp
     {
         static void Main(string[] args)
         {
-            //Console.WriteLine(DateTime.Parse("23 Sep 2014 23:45"));
-            //Chronic.Parser p = new Chronic.Parser();
-            //var span = p.Parse("24/9/2015 156");
-            //Console.WriteLine(span);
-            //return;
-
-            //var input = "30/9/1999";
-            //var input = "21:12:25";
-            //var input = "11/10/1978 3:45:54 AM";
-            var input = "tomorrow";
-            DateTime date;
-            Console.WriteLine(Parser.TryParse(input, out date));
-            Console.WriteLine(date);
-
-            //return;
-
+            //var input = "tomorrow";
             //DateTime date;
-            //Parser.TryParse("1/Feb/1978 10 am", out date);
-            //Console.WriteLine(date);
-
-            //Parser.TryParse("1", out date);
-            //Console.WriteLine(date);
-
-            //Parser.TryParse("1.May", out date);
-            //Console.WriteLine(date);
-
-            //Parser.TryParse("May 1978", out date);
-            //Console.WriteLine(date);
-
-            //Parser.TryParse("now", out date);
-            //Console.WriteLine(date);
-
-            //Parser.TryParse("Monday", out date);
-            //Console.WriteLine(date);
-
-            //Parser.TryParse("Tuesday", out date);
-            //Console.WriteLine(date);
-
-            //Parser.TryParse("Wednesday", out date);
-            //Console.WriteLine(date);
-
-            //Parser.TryParse("Thursday", out date);
+            //Console.WriteLine(Parser.TryParse(input, out date));
             //Console.WriteLine(date);
 
             RunBenchmarks();
@@ -68,6 +29,9 @@ namespace TestApp
         {
             Console.WriteLine();
             Console.WriteLine(name);
+
+            // throwaway the first call to allow for any JITing
+            RunBenchmark(callback);
 
             decimal total = 0;
             for (var i = 0; i < 5; i++)
