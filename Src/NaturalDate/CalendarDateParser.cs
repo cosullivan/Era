@@ -93,7 +93,7 @@ namespace NaturalDate
         {
             Enumerator.TakeWhile(TokenKind.Space);
 
-            return TryMakeTime(builder) && TryMakeDate(builder) && TryMakeEnd();
+            return TryMakeDate(builder) && TryMakeTime(builder) && TryMakeEnd();
         }
 
         /// <summary>
@@ -750,25 +750,6 @@ namespace NaturalDate
             }
 
             return true;
-        }
-
-        /// <summary>
-        /// Try to make a number of a specific maximum digit length.
-        /// </summary>
-        /// <param name="maxLength">The maximum digit length.</param>
-        /// <param name="value">The number that was made.</param>
-        /// <returns>true if a number could be made, false if not.</returns>
-        bool TryMakeNumber(int maxLength, out int value)
-        {
-            value = 0;
-
-            while (maxLength > 0 && Enumerator.Peek().Kind == TokenKind.Digit)
-            {
-                value = (value * 10) + Enumerator.Take().AsInteger();
-                maxLength = maxLength - 1;
-            }
-
-            return maxLength == 0 && Enumerator.Peek().Kind != TokenKind.Digit;
         }
     }
 }

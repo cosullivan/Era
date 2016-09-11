@@ -36,7 +36,6 @@ namespace NaturalDate.Text
 
             if (Char.IsDigit(_input[_index]))
             {
-                //return NumberToken();
                 return new Token(TokenKind.Digit, _input[_index]);
             }
 
@@ -73,29 +72,6 @@ namespace NaturalDate.Text
 
             return new Token(TokenKind.Text, _input.Substring(start, (_index - start) + 1));
         }
-
-        ///// <summary>
-        ///// Returns a Number (or alpha-numeric) token from the current position.
-        ///// </summary>
-        ///// <returns>The number token that was found at the current position.</returns>
-        //Token NumberToken()
-        //{
-        //    var start = _index;
-        //    var tokenKind = TokenKind.Number;
-
-        //    while (IsEof(_index) == false && Char.IsLetterOrDigit(_input[_index + 1]))
-        //    {
-        //        // promote to a word if an alpha character is detected
-        //        if (Char.IsLetter(_input[_index + 1]))
-        //        {
-        //            tokenKind = TokenKind.Text;
-        //        }
-
-        //        _index++;
-        //    }
-
-        //    return new Token(tokenKind, _input.Substring(start, (_index - start) + 1));
-        //}
 
         /// <summary>
         /// Returns a value indicating whether or not the given index is currently at the end of the input string.

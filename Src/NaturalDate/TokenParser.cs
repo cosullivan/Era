@@ -103,36 +103,22 @@ namespace NaturalDate
         }
 
         /// <summary>
-        /// Attempt to make a numeric value whilst considering leading zeros.
+        /// Try to make a number of a specific maximum digit length.
         /// </summary>
-        /// <param name="length">The minimum length (including leading zeros).</param>
-        /// <param name="value">The value that was made.</param>
-        /// <returns>true if a value with the given length could be made, false if not.</returns>
-        protected bool TryMakeNumeric(int length, out int value)
-        {
-            return TryMakeNumeric(length, length, out value);
-        }
-
-        /// <summary>
-        /// Attempt to make a numeric value whilst considering leading zeros.
-        /// </summary>
-        /// <param name="minLength">The minimum length (including leading zeros).</param>
-        /// <param name="maxLength">The maximum length (including leading zeros).</param>
-        /// <param name="value">The value that was made.</param>
-        /// <returns>true if a value with the given length could be made, false if not.</returns>
-        protected bool TryMakeNumeric(int minLength, int maxLength, out int value)
+        /// <param name="maxLength">The maximum digit length.</param>
+        /// <param name="value">The number that was made.</param>
+        /// <returns>true if a number could be made, false if not.</returns>
+        protected bool TryMakeNumber(int maxLength, out int value)
         {
             value = 0;
 
-            var token = Enumerator.Peek();
-            if (token.Kind == TokenKind.Number && token.Text.Length >= minLength && token.Text.Length <= maxLength)
+            while (maxLength > 0 && Enumerator.Peek().Kind == TokenKind.Digit)
             {
-                Enumerator.Take();
-                value = token.AsInteger();
-                return true;
+                value = (value * 10) + Enumerator.Take().AsInteger();
+                maxLength = maxLength - 1;
             }
 
-            return false;
+            return maxLength == 0 && Enumerator.Peek().Kind != TokenKind.Digit;
         }
 
         /// <summary>

@@ -18,12 +18,14 @@ namespace TestApp
 
             //var input = "30/9/1999";
             //var input = "21:12:25";
-            var input = "12am";
+            var input = "11/10/1978 3:45:54 AM";
             var parser = new CalendarDateParser(new TokenEnumerator(new StringTokenReader(input)));
 
             var builder = new DateTimeBuilder(DateTime.Now);
             Console.WriteLine(parser.TryMake(builder));
             Console.WriteLine(builder.Build());
+
+            //return;
 
             //DateTime date;
             //Parser.TryParse("1/Feb/1978 10 am", out date);
@@ -55,46 +57,66 @@ namespace TestApp
 
             //5445
 
-            //var stopwatch = Stopwatch.StartNew();
-            //DateTimeParse(1000000);
-            //stopwatch.Stop();
-            //Console.WriteLine("Time Taken {0}ms", stopwatch.ElapsedMilliseconds);
-
-            //stopwatch = Stopwatch.StartNew();
-            //DateTimeParse(1000000);
-            //stopwatch.Stop();
-            //Console.WriteLine("Time Taken {0}ms", stopwatch.ElapsedMilliseconds);
-
-            //stopwatch = Stopwatch.StartNew();
-            //DateTimeParse(1000000);
-            //stopwatch.Stop();
-            //Console.WriteLine("Time Taken {0}ms", stopwatch.ElapsedMilliseconds);
+            //RunBenchmarks();
         }
 
-        //static void DateTimeParse(int iterations)
-        //{
-        //    for (var i = 0; i < iterations; i++)
-        //    {
-        //        var date = DateTime.Parse("10/09/1978");
-        //    }
-        //}
+        static void RunBenchmarks()
+        {
+            Console.WriteLine("System.DateTime");
+            Console.WriteLine("  Time Taken {0}ms", RunBenchmark(DateTimeParse));
+            Console.WriteLine("  Time Taken {0}ms", RunBenchmark(DateTimeParse));
+            Console.WriteLine("  Time Taken {0}ms", RunBenchmark(DateTimeParse));
+
+            Console.WriteLine();
+
+            Console.WriteLine("NaturalDate");
+            Console.WriteLine("  Time Taken {0}ms", RunBenchmark(ParserTryParse));
+            Console.WriteLine("  Time Taken {0}ms", RunBenchmark(ParserTryParse));
+            Console.WriteLine("  Time Taken {0}ms", RunBenchmark(ParserTryParse));
+
+            Console.WriteLine();
+
+            Console.WriteLine("Chronic");
+            Console.WriteLine("  Time Taken {0}ms", RunBenchmark(ChronicParse));
+            Console.WriteLine("  Time Taken {0}ms", RunBenchmark(ChronicParse));
+            Console.WriteLine("  Time Taken {0}ms", RunBenchmark(ChronicParse));
+        }
+
+        static long RunBenchmark(Action<int> callback, int iterations = 1000)
+        {
+            var stopwatch = Stopwatch.StartNew();
+
+            callback(iterations);
+
+            stopwatch.Stop();
+
+            return stopwatch.ElapsedMilliseconds;
+        }
 
         static void DateTimeParse(int iterations)
         {
             for (var i = 0; i < iterations; i++)
             {
-                DateTime date;
-                Parser.TryParse("10/09/1978", out date);
+                var date = DateTime.Parse("11/10/1978 3:45:54 AM");
             }
         }
 
-        //static void DateTimeParse(int iterations)
-        //{
-        //    for (var i = 0; i < iterations; i++)
-        //    {
-        //        Chronic.Parser p = new Chronic.Parser();
-        //        p.Parse("10/09/1978");
-        //    }
-        //}
+        static void ParserTryParse(int iterations)
+        {
+            for (var i = 0; i < iterations; i++)
+            {
+                DateTime date;
+                Parser.TryParse("11/10/1978 3:45:54 AM", out date);
+            }
+        }
+
+        static void ChronicParse(int iterations)
+        {
+            for (var i = 0; i < iterations; i++)
+            {
+                Chronic.Parser p = new Chronic.Parser();
+                p.Parse("11/10/1978 3:45:54 AM");
+            }
+        }
     }
 }

@@ -50,7 +50,6 @@
     <Compile Include="DateTimeBuilder.cs" />
     <Compile Include="IDateTimeParser.cs" />
     <Compile Include="Parser.cs" />
-    <Compile Include="TimeParser.cs" />
     <Compile Include="NaturalDateParser.cs" />
     <Compile Include="IDateTimeBuilder.cs" />
     <Compile Include="TokenParser.cs" />

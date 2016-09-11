@@ -53,12 +53,12 @@ namespace NaturalDate.Facts
                     new object[] { "3:45:54AM", new DateTime(Reference.Year, Reference.Month, Reference.Day, 3, 45, 54) },
                     new object[] { "3:45 AM", new DateTime(Reference.Year, Reference.Month, Reference.Day, 3, 45, 0) },
                     new object[] { "3:45AM", new DateTime(Reference.Year, Reference.Month, Reference.Day, 3, 45, 0) },
-                    new object[] { "3 AM", new DateTime(Reference.Year, Reference.Month, Reference.Day, 3, 45, 0) },
+                    new object[] { "3 AM", new DateTime(Reference.Year, Reference.Month, Reference.Day, 3, 0, 0) },
                     new object[] { "23:45:54", new DateTime(Reference.Year, Reference.Month, Reference.Day, 23, 45, 54) },
                     new object[] { "23:45", new DateTime(Reference.Year, Reference.Month, Reference.Day, 23, 45, 0) },
-                    new object[] { "3 AM", new DateTime(Reference.Year, Reference.Month, Reference.Day, 3, 0, 0) },
                     new object[] { "12 AM", new DateTime(Reference.Year, Reference.Month, Reference.Day, 0, 0, 0) },
                     new object[] { "12 PM", new DateTime(Reference.Year, Reference.Month, Reference.Day, 12, 0, 0) },
+                    new object[] { "11/10/1978 3:45:54 AM", new DateTime(1978, 10, 11, 3, 45, 54) },
                 };
             }
         }

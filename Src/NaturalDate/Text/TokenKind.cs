@@ -15,11 +15,6 @@
         /// <summary>
         /// A number.
         /// </summary>
-        Number,
-
-        /// <summary>
-        /// A number.
-        /// </summary>
         Digit,
 
         /// <summary>
