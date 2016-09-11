@@ -20,11 +20,9 @@ namespace TestApp
             //var input = "21:12:25";
             //var input = "11/10/1978 3:45:54 AM";
             var input = "tomorrow";
-            var parser = new CalendarDateParser(new TokenEnumerator(new StringTokenReader(input)));
-
-            var builder = new DateTimeBuilder(DateTime.Now);
-            Console.WriteLine(parser.TryMake(builder));
-            Console.WriteLine(builder.Build());
+            DateTime date;
+            Console.WriteLine(Parser.TryParse(input, out date));
+            Console.WriteLine(date);
 
             //return;
 
@@ -56,14 +54,14 @@ namespace TestApp
             //Parser.TryParse("Thursday", out date);
             //Console.WriteLine(date);
 
-            //RunBenchmarks();
+            RunBenchmarks();
         }
 
         static void RunBenchmarks()
         {
-            //RunBenchmark("System.DateTime", DateTimeParse);
+            RunBenchmark("System.DateTime", DateTimeParse);
             RunBenchmark("NaturalDate", ParserTryParse);
-            //RunBenchmark("Chronic", ChronicParse);
+            RunBenchmark("Chronic", ChronicParse);
         }
 
         static void RunBenchmark(string name, Action<int> callback, int iterations = 1000)

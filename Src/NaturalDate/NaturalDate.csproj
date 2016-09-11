@@ -46,9 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CalendarDateParser.cs" />
     <Compile Include="DateTimeBuilder.cs" />
-    <Compile Include="IDateTimeParser.cs" />
     <Compile Include="ParseContext.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="IDateTimeBuilder.cs" />

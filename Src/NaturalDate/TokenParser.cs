@@ -80,17 +80,6 @@ namespace NaturalDate
         /// <param name="token">The specific token to match at the current point.</param>
         /// <param name="offset">The offset into the future at which to make the match.</param>
         /// <returns>true if the specific separator token was made, false if not.</returns>
-        protected bool CanMakeToken(Token token, int offset = 0)
-        {
-            return Enumerator.Peek(offset) == token;
-        }
-
-        /// <summary>
-        /// Attempt to make the specific token.
-        /// </summary>
-        /// <param name="token">The specific token to match at the current point.</param>
-        /// <param name="offset">The offset into the future at which to make the match.</param>
-        /// <returns>true if the specific separator token was made, false if not.</returns>
         protected bool TryMakeToken(Token token, int offset = 0)
         {
             if (Enumerator.Peek(offset) == token)

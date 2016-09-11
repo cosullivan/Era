@@ -5,16 +5,16 @@ using Xunit;
 
 namespace NaturalDate.Facts
 {
-    public sealed class CalendarDateParserFacts
+    public sealed class ParserFacts
     {
         static readonly DateTime Reference = new DateTime(1978, 9, 10, 14, 30, 10); // Sunday
 
         [Theory]
         [MemberData(nameof(TheoryValues))]
-        public void Parse_CalendarDates_Success(string text, DateTime expected)
+        public void Parse_Success(string text, DateTime expected)
         {
             // arrange
-            var parser = new CalendarDateParser(new TokenEnumerator(new StringTokenReader(text)));
+            var parser = new Parser(new TokenEnumerator(new StringTokenReader(text)));
 
             // act
             var builder = new DateTimeBuilder(Reference);
