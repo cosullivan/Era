@@ -59,6 +59,9 @@ namespace NaturalDate.Facts
                     new object[] { "12 AM", new DateTime(Reference.Year, Reference.Month, Reference.Day, 0, 0, 0) },
                     new object[] { "12 PM", new DateTime(Reference.Year, Reference.Month, Reference.Day, 12, 0, 0) },
                     new object[] { "11/10/1978 3:45:54 AM", new DateTime(1978, 10, 11, 3, 45, 54) },
+                    new object[] { "today", new DateTime(Reference.Year, Reference.Month, Reference.Day, 0, 0, 0) },
+                    new object[] { "tomorrow", new DateTime(Reference.Year, Reference.Month, Reference.Day, 0, 0, 0).AddDays(1) },
+                    new object[] { "yesterday", new DateTime(Reference.Year, Reference.Month, Reference.Day, 0, 0, 0).AddDays(-1) },
                 };
             }
         }

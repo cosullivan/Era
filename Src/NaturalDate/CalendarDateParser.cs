@@ -35,10 +35,10 @@ namespace NaturalDate
         /// <returns>true if a date & time could be made, false if not.</returns>
         public bool TryMake(IDateTimeBuilder builder)
         {
-            return TryMake(TryMakeDateTime, builder)
-                || TryMake(TryMakeDate, builder)
-                || TryMake(TryMakeTime, builder)
-                || TryMake(TryMakeSingleDay, builder);
+            return (TryMake(TryMakeDateTime, builder) && TryMakeEnd())
+                || (TryMake(TryMakeDate, builder) && TryMakeEnd())
+                || (TryMake(TryMakeTime, builder) && TryMakeEnd())
+                || (TryMake(TryMakeSingleDay, builder) && TryMakeEnd());
         }
 
         /// <summary>
@@ -72,6 +72,19 @@ namespace NaturalDate
         }
 
         /// <summary>
+        /// Try to make the date based on a relative day to the current day.
+        /// </summary>
+        /// <param name="builder">The builder to build the date from.</param>
+        /// <param name="value">The positive or negative timespan in days to add to the current builder day.</param>
+        /// <returns>true if the date could be made, false if not.</returns>
+        static bool TryAccept(IDateTimeBuilder builder, TimeSpan value)
+        {
+            var current = builder.DateTime().Date.Add(value);
+
+            return TryAccept(builder, current.Year, current.Month, current.Day, 0, 0, 0);
+        }
+
+        /// <summary>
         /// Try to make the date with the given inputs.
         /// </summary>
         /// <param name="builder">The builder to build the date from.</param>
@@ -93,7 +106,7 @@ namespace NaturalDate
         {
             Enumerator.TakeWhile(TokenKind.Space);
 
-            return TryMakeDate(builder) && TryMakeTime(builder) && TryMakeEnd();
+            return TryMakeDate(builder) && TryMakeTime(builder);
         }
 
         /// <summary>
@@ -112,7 +125,9 @@ namespace NaturalDate
                 || TryMake(TryMakeYearMonthDay, builder)
                 || TryMake(TryMakeYearMonth, builder)
                 || TryMake(TryMakeYear, builder)
-                && TryMakeEnd();
+                || TryMake(TryMakeToday, builder)
+                || TryMake(TryMakeTomorrow, builder)
+                || TryMake(TryMakeYesterday, builder);
         }
 
         /// <summary>
@@ -128,8 +143,7 @@ namespace NaturalDate
                 || TryMake(TryMake24HourMinuteSecond, builder)
                 || TryMake(TryMake12HourMinute, builder)
                 || TryMake(TryMake24HourMinute, builder)
-                || TryMake(TryMake12Hour, builder)
-                && TryMakeEnd();
+                || TryMake(TryMake12Hour, builder);
         }
 
         /// <summary>
@@ -141,7 +155,43 @@ namespace NaturalDate
         {
             Enumerator.TakeWhile(TokenKind.Space);
 
-            return TryMake(TryMakeDay, builder) && TryMakeEnd();
+            return TryMake(TryMakeDay, builder);
+        }
+
+        /// <summary>
+        /// Try to make today.
+        /// </summary>
+        /// <param name="builder">The builder to make the date and time from.</param>
+        /// <returns>true if the date and time could be made, false if not.</returns>
+        bool TryMakeToday(IDateTimeBuilder builder)
+        {
+            var token = new Token(TokenKind.Text, "today");
+
+            return Enumerator.Take() == token && TryAccept(builder, TimeSpan.Zero);
+        }
+
+        /// <summary>
+        /// Try to make tomorrow.
+        /// </summary>
+        /// <param name="builder">The builder to make the date and time from.</param>
+        /// <returns>true if the date and time could be made, false if not.</returns>
+        bool TryMakeTomorrow(IDateTimeBuilder builder)
+        {
+            var token = new Token(TokenKind.Text, "tomorrow");
+
+            return Enumerator.Take() == token && TryAccept(builder, TimeSpan.FromDays(1));
+        }
+
+        /// <summary>
+        /// Try to make tomorrow.
+        /// </summary>
+        /// <param name="builder">The builder to make the date and time from.</param>
+        /// <returns>true if the date and time could be made, false if not.</returns>
+        bool TryMakeYesterday(IDateTimeBuilder builder)
+        {
+            var token = new Token(TokenKind.Text, "yesterday");
+
+            return Enumerator.Take() == token && TryAccept(builder, TimeSpan.FromDays(-1));
         }
 
         /// <summary>

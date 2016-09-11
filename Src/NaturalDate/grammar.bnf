@@ -12,6 +12,13 @@ date
 	year_month_day
 	year_month
 	year
+	natural_date
+
+natural_date
+	today
+	tomorrow
+	yesterday
+	day_of_week (monday thru sunday)
 
 time
 	12_hour_minute_second_period

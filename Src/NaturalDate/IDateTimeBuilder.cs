@@ -1,4 +1,6 @@
-﻿namespace NaturalDate
+﻿using System;
+
+namespace NaturalDate
 {
     public interface IDateTimeBuilder<out T> : IDateTimeBuilder
     {
@@ -40,5 +42,23 @@
         /// Gets or sets the seconds portion of the time.
         /// </summary>
         int Second { get; set; }
+    }
+
+    internal static class DateTimeBuilderExtensions
+    {
+        /// <summary>
+        /// Returns the builder as a CLR DateTime instance.
+        /// </summary>
+        /// <param name="builder">The builder to return as a CLR DateTime instance.</param>
+        /// <returns>The CLR DateTime instance that represents the current state of the builder.</returns>
+        internal static DateTime DateTime(this IDateTimeBuilder builder)
+        {
+            if (builder == null)
+            { 
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            return new DateTime(builder.Year, builder.Month, builder.Day, builder.Hour, builder.Minute, builder.Second);
+        }
     }
 }

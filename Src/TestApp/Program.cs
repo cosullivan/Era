@@ -18,7 +18,8 @@ namespace TestApp
 
             //var input = "30/9/1999";
             //var input = "21:12:25";
-            var input = "11/10/1978 3:45:54 AM";
+            //var input = "11/10/1978 3:45:54 AM";
+            var input = "tomorrow";
             var parser = new CalendarDateParser(new TokenEnumerator(new StringTokenReader(input)));
 
             var builder = new DateTimeBuilder(DateTime.Now);
