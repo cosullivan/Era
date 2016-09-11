@@ -14,6 +14,14 @@ namespace NaturalDate
             new Token(TokenKind.Punctuation, '.')
         };
 
+        static readonly Token[] TimeSeparators =
+        {
+            new Token(TokenKind.Punctuation, ':')
+        };
+
+        static readonly Token TimeAM = new Token(TokenKind.Text, "AM");
+        static readonly Token TimePM = new Token(TokenKind.Text, "PM");
+
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -27,7 +35,10 @@ namespace NaturalDate
         /// <returns>true if a date & time could be made, false if not.</returns>
         public bool TryMake(IDateTimeBuilder builder)
         {
-            return TryMakeDate(builder);
+            return TryMake(TryMakeDateTime, builder)
+                || TryMake(TryMakeDate, builder)
+                || TryMake(TryMakeTime, builder)
+                || TryMake(TryMakeSingleDay, builder);
         }
 
         /// <summary>
@@ -37,22 +48,52 @@ namespace NaturalDate
         /// <param name="year">The year to build the date from.</param>
         /// <param name="month">The month to build the date from.</param>
         /// <param name="day">The day to build the date from.</param>
+        /// <param name="hour">The hour to build the time from.</param>
+        /// <param name="minute">The minute to build the time from.</param>
+        /// <param name="second">The second to build the time from.</param>
         /// <returns>true if the date could be made, false if not.</returns>
-        static bool TryAccept(IDateTimeBuilder builder, int year, int month, int day)
+        static bool TryAccept(IDateTimeBuilder builder, int year, int month, int day, int hour = 0, int minute = 0, int second = 0)
         {
+            year = year < 100 ? 2000 + year : year;
+
             if (day > DateTime.DaysInMonth(year, month))
             {
                 return false;
             }
 
-            builder.Year = year < 100 ? 2000 + year : year;
+            builder.Year = year;
             builder.Month = month;
             builder.Day = day;
-            builder.Hour = 0;
-            builder.Minute = 0;
-            builder.Second = 0;
+            builder.Hour = hour;
+            builder.Minute = minute;
+            builder.Second = second;
 
             return true;
+        }
+
+        /// <summary>
+        /// Try to make the date with the given inputs.
+        /// </summary>
+        /// <param name="builder">The builder to build the date from.</param>
+        /// <param name="hour">The hour to build the time from.</param>
+        /// <param name="minute">The minute to build the time from.</param>
+        /// <param name="second">The second to build the time from.</param>
+        /// <returns>true if the date could be made, false if not.</returns>
+        static bool TryAcceptTime(IDateTimeBuilder builder, int hour, int minute, int second)
+        {
+            return TryAccept(builder, builder.Year, builder.Month, builder.Day, hour, minute, second);
+        }
+
+        /// <summary>
+        /// Try to make a date.
+        /// </summary>
+        /// <param name="builder">The builder to make the date from.</param>
+        /// <returns>true if the date could be made, false if not.</returns>
+        bool TryMakeDateTime(IDateTimeBuilder builder)
+        {
+            Enumerator.TakeWhile(TokenKind.Space);
+
+            return TryMakeTime(builder) && TryMakeDate(builder) && TryMakeEnd();
         }
 
         /// <summary>
@@ -62,6 +103,8 @@ namespace NaturalDate
         /// <returns>true if the date could be made, false if not.</returns>
         bool TryMakeDate(IDateTimeBuilder builder)
         {
+            Enumerator.TakeWhile(TokenKind.Space);
+
             return TryMake(TryMakeDayMonthYear, builder)
                 || TryMake(TryMakeDayMonth, builder)
                 || TryMake(TryMakeMonthYear, builder)
@@ -69,7 +112,36 @@ namespace NaturalDate
                 || TryMake(TryMakeYearMonthDay, builder)
                 || TryMake(TryMakeYearMonth, builder)
                 || TryMake(TryMakeYear, builder)
-                || TryMake(TryMakeDay, builder);
+                && TryMakeEnd();
+        }
+
+        /// <summary>
+        /// Try to make a time.
+        /// </summary>
+        /// <param name="builder">The builder to make the time from.</param>
+        /// <returns>true if the time could be made, false if not.</returns>
+        bool TryMakeTime(IDateTimeBuilder builder)
+        {
+            Enumerator.TakeWhile(TokenKind.Space);
+
+            return TryMake(TryMake12HourMinuteSecond, builder)
+                || TryMake(TryMake24HourMinuteSecond, builder)
+                || TryMake(TryMake12HourMinute, builder)
+                || TryMake(TryMake24HourMinute, builder)
+                || TryMake(TryMake12Hour, builder)
+                && TryMakeEnd();
+        }
+
+        /// <summary>
+        /// Try to make a time.
+        /// </summary>
+        /// <param name="builder">The builder to make the time from.</param>
+        /// <returns>true if the time could be made, false if not.</returns>
+        bool TryMakeSingleDay(IDateTimeBuilder builder)
+        {
+            Enumerator.TakeWhile(TokenKind.Space);
+
+            return TryMake(TryMakeDay, builder) && TryMakeEnd();
         }
 
         /// <summary>
@@ -124,8 +196,7 @@ namespace NaturalDate
                 return false;
             }
 
-            Token separator;
-            if (TryMakeToken(DateSeparators, out separator) == false)
+            if (TryMakeToken(DateSeparators) == false)
             {
                 return false;
             }
@@ -436,6 +507,249 @@ namespace NaturalDate
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Attempt to make a 12 time in the 12 hour format with minutes and seconds.
+        /// </summary>
+        /// <param name="builder">The builder to build the time on.</param>
+        /// <returns>true if the time could be made, false if not.</returns>
+        bool TryMake12HourMinuteSecond(IDateTimeBuilder builder)
+        {
+            int hour;
+            if (TryMake12HourPart(out hour) == false)
+            {
+                return false;
+            }
+
+            Token separator;
+            if (TryMakeToken(TimeSeparators, out separator) == false)
+            {
+                return false;
+            }
+
+            int minute;
+            if (TryMakeMinutePart(out minute) == false)
+            {
+                return false;
+            }
+
+            if (TryMakeToken(separator) == false)
+            {
+                return false;
+            }
+
+            int second;
+            if (TryMakeSecondPart(out second) == false)
+            {
+                return false;
+            }
+
+            if (TryMakeTimePeriod(ref hour) == false)
+            {
+                return false;
+            }
+
+            return TryAcceptTime(builder, hour, minute, second);
+        }
+
+        /// <summary>
+        /// Attempt to make a time in the 24 hour format with minutes and seconds.
+        /// </summary>
+        /// <param name="builder">The builder to build the time on.</param>
+        /// <returns>true if the time could be made, false if not.</returns>
+        bool TryMake24HourMinuteSecond(IDateTimeBuilder builder)
+        {
+            int hour;
+            if (TryMake24HourPart(out hour) == false)
+            {
+                return false;
+            }
+
+            Token separator;
+            if (TryMakeToken(TimeSeparators, out separator) == false)
+            {
+                return false;
+            }
+
+            int minute;
+            if (TryMakeMinutePart(out minute) == false)
+            {
+                return false;
+            }
+
+            if (TryMakeToken(separator) == false)
+            {
+                return false;
+            }
+
+            int second;
+            if (TryMakeSecondPart(out second) == false)
+            {
+                return false;
+            }
+
+            return TryAcceptTime(builder, hour, minute, second);
+        }
+
+        /// <summary>
+        /// Attempt to make a time in the 12 hour format with minutes.
+        /// </summary>
+        /// <param name="builder">The builder to build the time on.</param>
+        /// <returns>true if the time could be made, false if not.</returns>
+        bool TryMake12HourMinute(IDateTimeBuilder builder)
+        {
+            int hour;
+            if (TryMake12HourPart(out hour) == false)
+            {
+                return false;
+            }
+
+            Token separator;
+            if (TryMakeToken(TimeSeparators, out separator) == false)
+            {
+                return false;
+            }
+
+            int minute;
+            if (TryMakeMinutePart(out minute) == false)
+            {
+                return false;
+            }
+
+            if (TryMakeTimePeriod(ref hour) == false)
+            {
+                return false;
+            }
+
+            return TryAcceptTime(builder, hour, minute, 0);
+        }
+
+        /// <summary>
+        /// Attempt to make a time in the 24 hour format with minutes.
+        /// </summary>
+        /// <param name="builder">The builder to build the time on.</param>
+        /// <returns>true if the time could be made, false if not.</returns>
+        bool TryMake24HourMinute(IDateTimeBuilder builder)
+        {
+            int hour;
+            if (TryMake24HourPart(out hour) == false)
+            {
+                return false;
+            }
+
+            Token separator;
+            if (TryMakeToken(TimeSeparators, out separator) == false)
+            {
+                return false;
+            }
+
+            int minute;
+            if (TryMakeMinutePart(out minute) == false)
+            {
+                return false;
+            }
+
+            return TryAcceptTime(builder, hour, minute, 0);
+        }
+
+        /// <summary>
+        /// Attempt to make a time in the 12 hour format with only the hour portion.
+        /// </summary>
+        /// <param name="builder">The builder to build the time on.</param>
+        /// <returns>true if the time could be made, false if not.</returns>
+        bool TryMake12Hour(IDateTimeBuilder builder)
+        {
+            int hour;
+            if (TryMake12HourPart(out hour) == false)
+            {
+                return false;
+            }
+
+            if (TryMakeTimePeriod(ref hour) == false)
+            {
+                return false;
+            }
+
+            return TryAcceptTime(builder, hour, 0, 0);
+        }
+
+        /// <summary>
+        /// Attempt to make the 12 hour part of the time.
+        /// </summary>
+        /// <param name="hour">The hour part of a time.</param>
+        /// <returns>true if a hour part could be made, false if not.</returns>
+        bool TryMake12HourPart(out int hour)
+        {
+            if (TryMake(TryMakeNumber, 2, out hour) == false && TryMake(TryMakeNumber, 1, out hour) == false)
+            {
+                return false;
+            }
+
+            return hour >= 0 && hour <= 12;
+        }
+
+        /// <summary>
+        /// Attempt to make the 24 hour part of the time.
+        /// </summary>
+        /// <param name="hour">The hour part of a time.</param>
+        /// <returns>true if a hour part could be made, false if not.</returns>
+        bool TryMake24HourPart(out int hour)
+        {
+            if (TryMake(TryMakeNumber, 2, out hour) == false && TryMake(TryMakeNumber, 1, out hour) == false)
+            {
+                return false;
+            }
+
+            return hour >= 0 && hour <= 23;
+        }
+
+        /// <summary>
+        /// Attempt to make the minute part of the time.
+        /// </summary>
+        /// <param name="minute">The minute part of a time.</param>
+        /// <returns>true if a minute part could be made, false if not.</returns>
+        bool TryMakeMinutePart(out int minute)
+        {
+            return TryMakeNumber(2, out minute) && minute >= 0 && minute <= 59;
+        }
+
+        /// <summary>
+        /// Attempt to make the second part of the time.
+        /// </summary>
+        /// <param name="second">The second part of a time.</param>
+        /// <returns>true if a second part could be made, false if not.</returns>
+        bool TryMakeSecondPart(out int second)
+        {
+            return TryMakeNumber(2, out second) && second >= 0 && second <= 59;
+        }
+
+        /// <summary>
+        /// Attempt to make the time period whilst adjusting the hour.
+        /// </summary>
+        /// <param name="hour">The hour to adjust according to the time period.</param>
+        /// <returns>true if a time period could be made, false if not.</returns>
+        bool TryMakeTimePeriod(ref int hour)
+        {
+            Enumerator.TakeWhile(TokenKind.Space);
+
+            Token token;
+            if (TryMakeToken(new[] { TimeAM, TimePM }, out token) == false)
+            {
+                return false;
+            }
+
+            if (token == TimePM && hour < 12)
+            {
+                hour += 12;
+            }
+
+            if (token == TimeAM && hour == 12)
+            {
+                hour = 0;
+            }
+
+            return true;
         }
 
         /// <summary>

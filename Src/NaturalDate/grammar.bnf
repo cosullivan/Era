@@ -1,0 +1,121 @@
+﻿datetime
+	date
+	time
+	datetime
+	single_day
+
+date
+	day_month_year
+	day_month 
+	month_year
+	month
+	year_month_day
+	year_month
+	year
+
+time
+	12_hour_minute_second_period
+	24_hour_minute_second
+	12_hour_minute_period
+	24_hour_minute
+	12_hour_period
+
+single_day
+	day
+
+day_month_year
+	day_part date_separator month_part date_separator year_part
+
+day_month 
+	day_part date_separator month_part
+
+day
+	day_part
+
+month_year
+	month_name_year
+    month_digit_four_digit_year
+
+month_name_year
+	month_name date_separator year
+
+month_digit_four_digit_year
+	month_digit date_separator four_digit_year
+
+month
+	month_name	
+
+year_month_day
+	four_digit_year date_separator month separator day
+
+year_month
+	four_digit_year date_separator month
+
+year
+	four_digit_number
+
+day_part
+	two_digit_number
+    single_digit_number
+
+month_part
+	month_numeric
+	month_name
+
+month_numeric
+	two_digit_number
+    single_digit_number
+
+month_name
+	jan | feb | ...
+
+year_part
+	four_digit_number
+	two_digit_number
+
+date_separator
+	-
+	.
+	/
+
+12_hour_minute_second_period
+	hour_part time_separator minute_part time_separator second_part time_period
+
+24_hour_minute_second
+	hour_part time_separator minute_part time_separator second_part
+
+12_hour_minute_period
+	hour_part time_separator minute_part time_period
+
+24_hour_minute
+	hour_part time_separator minute_part
+
+12_hour_period
+	hour_part time_period
+
+hour_part
+	digit digit
+	digit
+
+minute_part
+	digit digit
+
+second_part
+	digit digit
+
+time_separator
+	:
+
+time_period
+	AM | PM
+
+four_digit_number
+	digit digit digit digit
+
+two_digit_number
+	digit digit
+
+single_digit_number
+	digit
+
+digit = [0-9]

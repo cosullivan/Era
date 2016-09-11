@@ -49,6 +49,16 @@ namespace NaturalDate.Facts
                     new object[] { "1978", new DateTime(1978, 1, 1, 0, 0, 0) },
                     new object[] { "1978-Sep", new DateTime(1978, 9, 1, 0, 0, 0) },
                     new object[] { "1978-Sep-10", new DateTime(1978, 9, 10, 0, 0, 0) },
+                    new object[] { "3:45:54 AM", new DateTime(Reference.Year, Reference.Month, Reference.Day, 3, 45, 54) },
+                    new object[] { "3:45:54AM", new DateTime(Reference.Year, Reference.Month, Reference.Day, 3, 45, 54) },
+                    new object[] { "3:45 AM", new DateTime(Reference.Year, Reference.Month, Reference.Day, 3, 45, 0) },
+                    new object[] { "3:45AM", new DateTime(Reference.Year, Reference.Month, Reference.Day, 3, 45, 0) },
+                    new object[] { "3 AM", new DateTime(Reference.Year, Reference.Month, Reference.Day, 3, 45, 0) },
+                    new object[] { "23:45:54", new DateTime(Reference.Year, Reference.Month, Reference.Day, 23, 45, 54) },
+                    new object[] { "23:45", new DateTime(Reference.Year, Reference.Month, Reference.Day, 23, 45, 0) },
+                    new object[] { "3 AM", new DateTime(Reference.Year, Reference.Month, Reference.Day, 3, 0, 0) },
+                    new object[] { "12 AM", new DateTime(Reference.Year, Reference.Month, Reference.Day, 0, 0, 0) },
+                    new object[] { "12 PM", new DateTime(Reference.Year, Reference.Month, Reference.Day, 12, 0, 0) },
                 };
             }
         }

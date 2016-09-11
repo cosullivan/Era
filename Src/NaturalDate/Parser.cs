@@ -57,7 +57,7 @@ namespace NaturalDate
         /// <returns>true if a date could be made, false if not.</returns>
         bool TryMakeDate(IDateTimeBuilder builder)
         {
-            return false;
+            return new CalendarDateParser(_enumerator).TryMake(builder);
         }
     }
 }

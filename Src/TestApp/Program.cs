@@ -10,8 +10,15 @@ namespace TestApp
     {
         static void Main(string[] args)
         {
+            //Console.WriteLine(DateTime.Parse("23 Sep 2014 23:45"));
+            //Chronic.Parser p = new Chronic.Parser();
+            //var span = p.Parse("24/9/2015 156");
+            //Console.WriteLine(span);
+            //return;
+
             //var input = "30/9/1999";
-            var input = "1998";
+            //var input = "21:12:25";
+            var input = "12am";
             var parser = new CalendarDateParser(new TokenEnumerator(new StringTokenReader(input)));
 
             var builder = new DateTimeBuilder(DateTime.Now);
@@ -49,17 +56,17 @@ namespace TestApp
             //5445
 
             //var stopwatch = Stopwatch.StartNew();
-            //DateTimeParse(1000);
+            //DateTimeParse(1000000);
             //stopwatch.Stop();
             //Console.WriteLine("Time Taken {0}ms", stopwatch.ElapsedMilliseconds);
 
             //stopwatch = Stopwatch.StartNew();
-            //DateTimeParse(1000);
+            //DateTimeParse(1000000);
             //stopwatch.Stop();
             //Console.WriteLine("Time Taken {0}ms", stopwatch.ElapsedMilliseconds);
 
             //stopwatch = Stopwatch.StartNew();
-            //DateTimeParse(1000);
+            //DateTimeParse(1000000);
             //stopwatch.Stop();
             //Console.WriteLine("Time Taken {0}ms", stopwatch.ElapsedMilliseconds);
         }
@@ -72,14 +79,14 @@ namespace TestApp
         //    }
         //}
 
-        //static void DateTimeParse(int iterations)
-        //{
-        //    for (var i = 0; i < iterations; i++)
-        //    {
-        //        DateTime date;
-        //        Parser.TryParse("10/09/1978", out date);
-        //    }
-        //}
+        static void DateTimeParse(int iterations)
+        {
+            for (var i = 0; i < iterations; i++)
+            {
+                DateTime date;
+                Parser.TryParse("10/09/1978", out date);
+            }
+        }
 
         //static void DateTimeParse(int iterations)
         //{
