@@ -30,7 +30,7 @@ namespace TestApp
             Console.WriteLine();
             Console.WriteLine(name);
 
-            // throwaway the first call to allow for any JITing
+            // ignore the first call
             RunBenchmark(callback);
 
             decimal total = 0;
