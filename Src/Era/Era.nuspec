@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>Era</id>
+        <title>Era</title>
+        <version>1.0.0</version>
+        <authors>Cain O'Sullivan</authors>
+        <projectUrl>https://github.com/cosullivan/Era</projectUrl>
+        <description>A natural language date &amp; time parsing library for .NET.</description>
+    </metadata>
+    <files>
+        <file src="bin\Release\Net45\Era.dll" target="lib\Net45" />
+        <file src="bin\Release\Portable-Net45+WinRT45+WP8+WPA81\Era.dll" target="lib\Portable-Net45+NetCore45+WP8+WPA81" />
+    </files>
+</package>

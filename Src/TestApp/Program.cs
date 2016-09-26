@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Text;
 using Era;
 
 namespace TestApp
@@ -20,7 +19,7 @@ namespace TestApp
         static void RunBenchmarks()
         {
             RunBenchmark("System.DateTime", DateTimeParse);
-            RunBenchmark("NaturalDate", ParserTryParse);
+            RunBenchmark("Era", EraTryParse);
             RunBenchmark("Chronic", ChronicParse);
         }
 
@@ -64,7 +63,7 @@ namespace TestApp
             }
         }
 
-        static void ParserTryParse(int iterations)
+        static void EraTryParse(int iterations)
         {
             for (var i = 0; i < iterations; i++)
             {

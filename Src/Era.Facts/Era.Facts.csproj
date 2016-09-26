@@ -63,9 +63,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Era\Era.csproj">
+    <ProjectReference Include="..\Era\Era.Net45.csproj">
       <Project>{3949F194-D1BF-41A7-8130-CD2A0F018055}</Project>
-      <Name>NaturalDate</Name>
+      <Name>Era.Net45</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

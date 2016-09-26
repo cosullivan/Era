@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Globalization;
 
 namespace Era.Text
 {
@@ -39,7 +38,7 @@ namespace Era.Text
         /// <param name="ch">The character to create the token from.</param>
         public Token(TokenKind kind, char ch) : this()
         {
-            Text = ch.ToString(CultureInfo.InvariantCulture);
+            Text = ch.ToString();
             Kind = kind;
         }
 
@@ -50,7 +49,7 @@ namespace Era.Text
         /// <returns>true if <paramref name="other"/> and this instance are the same type and represent the same value; otherwise, false. </returns>
         public bool Equals(Token other)
         {
-            return Kind == other.Kind && String.Equals(Text, other.Text, StringComparison.InvariantCultureIgnoreCase);
+            return Kind == other.Kind && String.Equals(Text, other.Text, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -78,7 +77,7 @@ namespace Era.Text
         {
             unchecked
             {
-                return ((Text != null ? Text.GetHashCode() : 0) * 397) ^ (int)Kind;
+                return ((Text?.GetHashCode() ?? 0) * 397) ^ (int)Kind;
             }
         }
 
@@ -110,17 +109,17 @@ namespace Era.Text
         /// <returns>The string representation of the token.</returns>
         public override string ToString()
         {
-            return String.Format("[{0}] {1}", Kind, Text);
+            return $"[{Kind}] {Text}";
         }
 
         /// <summary>
         /// Gets the token text.
         /// </summary>
-        public string Text { get; private set; }
+        public string Text { get; }
 
         /// <summary>
         /// Gets the token kind.
         /// </summary>
-        public TokenKind Kind { get; private set; }
+        public TokenKind Kind { get; }
     }
 }
