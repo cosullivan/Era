@@ -5,16 +5,14 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Era")]
-[assembly: AssemblyDescription("Natural Language Date and Time parser.")]
+[assembly: AssemblyTitle("Era.Benchmark")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Era")]
+[assembly: AssemblyProduct("Era.Benchmark")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: InternalsVisibleTo("Era.Facts")]
-[assembly: InternalsVisibleTo("TestApp")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
@@ -22,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("3949f194-d1bf-41a7-8130-cd2a0f018055")]
+[assembly: Guid("1407d559-d52b-416c-a3bf-9c05f6aaa4cb")]
 
 // Version information for an assembly consists of the following four values:
 //
