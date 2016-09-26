@@ -7,8 +7,8 @@
     <ProjectGuid>{58E904DD-7A87-4F9E-911D-875D074D2734}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NaturalDate.Facts</RootNamespace>
-    <AssemblyName>NaturalDate.Facts</AssemblyName>
+    <RootNamespace>Era.Facts</RootNamespace>
+    <AssemblyName>Era.Facts</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -63,7 +63,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NaturalDate\NaturalDate.csproj">
+    <ProjectReference Include="..\Era\Era.csproj">
       <Project>{3949F194-D1BF-41A7-8130-CD2A0F018055}</Project>
       <Name>NaturalDate</Name>
     </ProjectReference>

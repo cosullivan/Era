@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NaturalDate
+namespace Era
 {
     internal sealed class DateTimeBuilder : IDateTimeBuilder<DateTime>
     {

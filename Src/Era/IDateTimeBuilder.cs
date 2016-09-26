@@ -1,4 +1,4 @@
-﻿namespace NaturalDate
+﻿namespace Era
 {
     public interface IDateTimeBuilder<out T> : IDateTimeBuilder
     {

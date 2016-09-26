@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Text;
-using NaturalDate;
-using NaturalDate.Text;
+using Era;
 
 namespace TestApp
 {

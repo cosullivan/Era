@@ -1,4 +1,4 @@
-﻿namespace NaturalDate.Text
+﻿namespace Era.Text
 {
     public abstract class TokenReader
     {

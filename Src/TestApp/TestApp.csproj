@@ -55,7 +55,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NaturalDate\NaturalDate.csproj">
+    <ProjectReference Include="..\Era\Era.csproj">
       <Project>{3949f194-d1bf-41a7-8130-cd2a0f018055}</Project>
       <Name>NaturalDate</Name>
     </ProjectReference>

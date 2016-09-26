@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using NaturalDate.Text;
+using Era.Text;
 
-namespace NaturalDate
+namespace Era
 {
     public sealed class Parser : TokenParser
     {

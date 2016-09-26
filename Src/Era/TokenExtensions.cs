@@ -1,7 +1,7 @@
 ﻿using System;
-using NaturalDate.Text;
+using Era.Text;
 
-namespace NaturalDate
+namespace Era
 {
     internal static class TokenExtensions
     {

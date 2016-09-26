@@ -1,6 +1,6 @@
-﻿using NaturalDate.Text;
+﻿using Era.Text;
 
-namespace NaturalDate
+namespace Era
 {
     public abstract class TokenParser
     {

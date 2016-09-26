@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NaturalDate.Text
+namespace Era.Text
 {
     public sealed class StringTokenReader : TokenReader
     {

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using NaturalDate.Text;
+using Era.Text;
 using Xunit;
 
-namespace NaturalDate.Facts
+namespace Era.Facts
 {
     public sealed class ParserFacts
     {

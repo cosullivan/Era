@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace NaturalDate.Text
+namespace Era.Text
 {
     public sealed class TokenEnumerator
     {

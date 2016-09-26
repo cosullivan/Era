@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Globalization;
 
-namespace NaturalDate.Text
+namespace Era.Text
 {
     [DebuggerDisplay("[{Kind}] {Text}")]
     public struct Token
