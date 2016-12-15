@@ -1,0 +1,19 @@
+﻿timespan =
+	hour 
+	minute
+
+hour = 
+	number "hour"
+	minute
+
+minute
+
+number =
+ 	precision 
+	precision scale
+
+precision = digits
+
+scale = . digits
+
+digit = [0-9]

@@ -56,7 +56,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ParserFacts.cs" />
+    <Compile Include="DateTimeFacts.cs" />
+    <Compile Include="DurationFacts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

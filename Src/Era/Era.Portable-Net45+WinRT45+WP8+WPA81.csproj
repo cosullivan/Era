@@ -36,11 +36,14 @@
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
     <None Include="Era.nuspec" />
-    <None Include="grammar.bnf" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DateTimeBuilder.cs" />
+    <Compile Include="DateTimeParser.cs" />
+    <Compile Include="DurationBuilder.cs" />
+    <Compile Include="DurationParser.cs" />
     <Compile Include="IDateTimeBuilder.cs" />
+    <Compile Include="IDurationBuilder.cs" />
     <Compile Include="ParseContext.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -49,7 +52,7 @@
     <Compile Include="Text\TokenEnumerator.cs" />
     <Compile Include="Text\TokenKind.cs" />
     <Compile Include="Text\TokenReader.cs" />
-    <Compile Include="TokenExtensions.cs" />
+    <Compile Include="TimePart.cs" />
     <Compile Include="TokenParser.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

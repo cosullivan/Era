@@ -1,9 +1,12 @@
-﻿using System;
-
-namespace Era
+﻿namespace Era
 {
     internal sealed class ParseContext
     {
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        internal ParseContext() { }
+
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -16,15 +19,6 @@ namespace Era
             Hour = builder.Hour;
             Minute = builder.Minute;
             Second = builder.Second;
-        }
-
-        /// <summary>
-        /// Returns the builder as a CLR DateTime instance.
-        /// </summary>
-        /// <returns>The CLR DateTime instance that represents the current state of the builder.</returns>
-        internal DateTime DateTime()
-        {
-            return new DateTime(Year, Month, Day, Hour, Minute, Second);
         }
 
         /// <summary>

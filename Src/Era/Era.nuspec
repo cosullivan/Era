@@ -3,7 +3,7 @@
     <metadata>
         <id>Era</id>
         <title>Era</title>
-        <version>1.0.0</version>
+        <version>1.2.0</version>
         <authors>Cain O'Sullivan</authors>
         <projectUrl>https://github.com/cosullivan/Era</projectUrl>
         <description>A natural language date &amp; time parsing library for .NET.</description>

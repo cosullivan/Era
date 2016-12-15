@@ -46,10 +46,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DateTimeParser.cs" />
+    <Compile Include="IDurationBuilder.cs" />
+    <Compile Include="TimePart.cs" />
+    <Compile Include="DurationBuilder.cs" />
     <Compile Include="DateTimeBuilder.cs" />
     <Compile Include="ParseContext.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="IDateTimeBuilder.cs" />
+    <Compile Include="DurationParser.cs" />
     <Compile Include="TokenParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Text\StringTokenReader.cs" />
@@ -57,7 +62,6 @@
     <Compile Include="Text\TokenEnumerator.cs" />
     <Compile Include="Text\TokenKind.cs" />
     <Compile Include="Text\TokenReader.cs" />
-    <Compile Include="TokenExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -66,7 +70,8 @@
     <None Include="Era.nuspec">
       <SubType>Designer</SubType>
     </None>
-    <None Include="grammar.bnf" />
+    <None Include="timespan.bnf" />
+    <None Include="datetime.bnf" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

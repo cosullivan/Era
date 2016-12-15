@@ -103,7 +103,7 @@ namespace Era
 
             while (maxLength > 0 && Enumerator.Peek().Kind == TokenKind.Digit)
             {
-                value = (value * 10) + Enumerator.Take().AsInteger();
+                value = (value * 10) + Enumerator.Take().Text[0] - 48;
                 maxLength = maxLength - 1;
             }
 

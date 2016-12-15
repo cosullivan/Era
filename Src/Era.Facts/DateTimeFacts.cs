@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Era.Facts
 {
-    public sealed class ParserFacts
+    public sealed class DateTimeFacts
     {
         static readonly DateTime Reference = new DateTime(1978, 9, 10, 14, 30, 10); // Sunday
 
@@ -14,7 +14,7 @@ namespace Era.Facts
         public void Parse_Success(string text, DateTime expected)
         {
             // arrange
-            var parser = new Parser(new TokenEnumerator(new StringTokenReader(text)));
+            var parser = new DateTimeParser(new TokenEnumerator(new StringTokenReader(text)));
 
             // act
             var builder = new DateTimeBuilder(Reference);
@@ -30,7 +30,7 @@ namespace Era.Facts
         public void Parse_Failure(string text)
         {
             // arrange
-            var parser = new Parser(new TokenEnumerator(new StringTokenReader(text)));
+            var parser = new DateTimeParser(new TokenEnumerator(new StringTokenReader(text)));
 
             // act
             var builder = new DateTimeBuilder(Reference);
